@@ -1,0 +1,6 @@
+-normalize: convert mp3/wav/aac/flac to ogg convert Covers to 200x200 png
+-write pub/player.js to play/cancel mplayer and play audiotag. Also set a title.
+-coverloader: load normalized covers first, otherwise original
+-cache: store artists, books, tracknames, coverpaths, maybe even coverdata
+-fix node.js audiostreaming
+-get a 404 page which doesn't suck

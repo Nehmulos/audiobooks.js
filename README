@@ -1,0 +1,28 @@
+============= WARNING =============
+This is an old X-times resurrected legacy prioject, 
+so please excuse the horrible inconsitent code quality.
+
+============= Wut about =============
+Seriously I can't really tell what this creep is about anymore,
+but when I started it (formally written in php), it was about organizing my
+audiobooks on a homeserver and playing them via the html5 audio tag.
+
+Now I added radio-streams, changed the language/framework to node.js and started
+working on serverside mplayer playback.
+I also consider to convert the whole project into a music player.
+
+============= How to =============
+Put your files into this directory structure:
+pub/books/$AUTHOR/$BOOK/$CD/$TRACK.ogg
+
+you can add covers as cover.(png/jpg/jpeg) in:
+pub/books/$AUTHOR/cover.png
+pub/books/$AUTHOR/$BOOK/cover.png
+
+============= Requirements =============
+Node.js 0.8.16
+Tested in Chromium 20 and Firefox 17.
+It will probably also work with newer versions of node.js and 
+other up2date html5 browers.
+
+Most basic Html5 audio playback and browsing books works, nothing else confirmed
