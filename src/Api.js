@@ -1,6 +1,7 @@
 var fs = require("fs"),
     path = require("path"),
     fileServer = require("./FileServer.js"),
+    player = require("./Player.js"),
     querystring = require("querystring");
 
 function Api() {
@@ -28,10 +29,16 @@ Api.prototype.handleUri = function(res, uri) {
         console.log("start streaming");
         uri.pathname = uri.pathname.replace(/(\.\.)/g, "");
         streamFile(res, path.join("pub", uri.pathname), req);
-    } else if(uri.pathname == "/api/normalize") {
+    } else if (uri.pathname == "/api/normalize") {
         //TODO fix paths on file system change all extensions to lowercase
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{"status": "not implemented on server"}')
+    } else if (uri.pathname == "/api/play" && uri.query) {
+        player.play(res, uri.query);
+    } else if (uri.pathname == "/api/togglePause") {
+        player.pause(res);
+    } else if (uri.pathname == "/api/stop") {
+        player.stop(res);
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{' +
@@ -166,7 +173,6 @@ Api.prototype.getPlayableFileList = function(directory, cdName, callback) {
 
 
 //if(new RegExp("^\/api","").test(uri) == true) 
-
 
 function streamFile(res, fp, req)
 {
