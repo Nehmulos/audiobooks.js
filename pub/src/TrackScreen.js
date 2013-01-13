@@ -33,29 +33,29 @@ TrackScreen.prototype.createNodes = function()
                 $playTrackLink.text(this); 
                 $playTrackLink.attr("data-cd", cdName);
                 $playTrackLink.attr("data-track", this);
-                $playTrackLink.attr("data-file", "books/"+ _this.author +"/"+ _this.book +"/"+ cdName + "/"+ this +"?stream");
+                $playTrackLink.attr("data-file", "books/"+ _this.author +"/"+ _this.book +"/"+ cdName + "/"+ this);
                 $trackLi.append($playTrackLink);
                 $cdList.append($trackLi);
-                
-                $playTrackLink.click(function()
-                {
-                    var ap = $("#audioPlayer").get(0);
-                    ap.src = $(this).attr("data-file");
-                    ap.play()
-                });
             });
+        });
+        $(".PlayTrackLink").click(function() {
+            app.player.play($(this).attr("data-file"));
         });
     };
     
-    if(app.fileCache.author[this.author] && app.fileCache.author[this.author].book)
-    {
+    if(app.fileCache.author[this.author] && app.fileCache.author[this.author].book) {
         buildNodesFromJson(app.fileCache.author[this.author].book[this.book]);
     }
     else
     {
         $.getJSON("api/book.json?author=" + _this.author +"&book="+ _this.book, function(data) 
         {
-            data.cds = Utils.sortObject(data.cds);
+            //data.cds = Utils.sortObject(data.cds);
+            
+            data.cds.sort(function(a,b) {
+                return a.name > b.name;
+            });
+            
             $.each(data.cds, function() {
                 this.tracks.sort();
             });

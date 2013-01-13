@@ -3,6 +3,8 @@ function Application() {
     this.fileCache = {};
     this.fileCache.author = [];
     this.toolbar = new Toolbar();
+    this.tools = new Tools();
+    this.player = new WebPlayer();
 }
 
 Application.prototype.setScreenFromLocationHash = function()

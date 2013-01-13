@@ -1,11 +1,7 @@
+// TODO rename to navigationbar
 function Toolbar() {
     this.author = null;
     this.book = null;
-}
-
-Toolbar.prototype.init = function() {
-    var _this = this;
-    $(".cleanCacheButton").click(function() { _this.cleanCache(); });
 }
 
 Toolbar.prototype.setAuthor = function(author) {
@@ -29,7 +25,3 @@ Toolbar.prototype.setBook = function(book) {
     }
 }
 
-// TODO move into Tools.js
-Toolbar.prototype.cleanCache = function() {
-    
-}

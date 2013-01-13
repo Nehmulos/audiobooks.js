@@ -33,7 +33,7 @@ Utils.sortObject = function(o) {
 
     for (key in o) {
         if (o.hasOwnProperty(key)) {
-                a.push(key);
+            a.push(key);
         }
     }
 

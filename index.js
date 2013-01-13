@@ -6,8 +6,7 @@ var http = require("http"),
 var openStreams = [];
 var port = 8081;
 
-http.createServer(function(req, res)
-{
+http.createServer(function(req, res) {
     var uri = url.parse(req.url);
     if (api.isApiUrl(uri.pathname)) {
         api.handleUri(res, uri);
@@ -18,4 +17,4 @@ http.createServer(function(req, res)
     }
 }).listen(port);
 
-console.log("started audiobooks service at 127.0.0.1:" + port);
+console.log("started audiobooks service at port: " + port);

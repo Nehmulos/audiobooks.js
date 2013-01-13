@@ -36,9 +36,15 @@ Api.prototype.handleUri = function(res, uri) {
     } else if (uri.pathname == "/api/play" && uri.query) {
         player.play(res, uri.query);
     } else if (uri.pathname == "/api/togglePause") {
+        player.togglePause(res);
+    } else if (uri.pathname == "/api/pause") {
         player.pause(res);
+    } else if (uri.pathname == "/api/unPause") {
+        player.unPause(res);
     } else if (uri.pathname == "/api/stop") {
         player.stop(res);
+    } else if (uri.pathname == "/api/getProgress") {
+        player.sendProgress(res);
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{' +

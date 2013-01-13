@@ -13,19 +13,16 @@ function Player() {
 }
 
 Player.prototype.play = function(res, url) {
-    if (url.substr(0, 7) == "http://") {
-        this.playWithMplayer(url);
-        res.writeHead(200, {"Content-Type": "application/json"});
-        res.end('{"status": "started"}');
-    } else {
+    if (url.substr(0, 7) != "http://") {
         url = fileServer.resolveUrl(url);
-        this.playWithMplayer(url);
-        res.writeHead(200, {"Content-Type": "application/json"});
-        res.end('{"status": "started"}');
     }
+        
+    this.playWithMplayer(url);
+    res.writeHead(200, {"Content-Type": "application/json"});
+    res.end('{"status": "started"}');
 }
 
-Player.prototype.pause = function(res) {
+Player.prototype.togglePause = function(res) {
     if (this.mplayerProcess) {
         this.mplayerProcess.stdin.write("p");
         this.paused = !this.paused;
@@ -33,8 +30,26 @@ Player.prototype.pause = function(res) {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{"status": "'+status+'"}');
     }
-    res.writeHead(200, {"Content-Type": "application/json"});
+    res.writeHead(412, {"Content-Type": "application/json"});
     res.end('{"status": "no track"}');
+}
+
+Player.prototype.pause = function(res) {
+    if (!this.paused) {
+        this.togglePause(res);
+        return;
+    }
+    res.writeHead(412, {"Content-Type": "application/json"});
+    res.end('{"status": "already paused"}');
+}
+
+Player.prototype.unPause = function(res) {
+    if (this.paused) {
+        this.togglePause(res);
+        return;
+    }
+    res.writeHead(412, {"Content-Type": "application/json"});
+    res.end('{"status": "already playing"}');
 }
 
 Player.prototype.stop = function(res) {
@@ -44,7 +59,7 @@ Player.prototype.stop = function(res) {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{"status": "stopped"}');
     }
-    res.writeHead(200, {"Content-Type": "application/json"});
+    res.writeHead(412, {"Content-Type": "application/json"});
     res.end('{"status": "no track"}');
 }
 
@@ -65,8 +80,6 @@ Player.prototype.playWithMplayer = function(url) {
     this.playStatus = "init";
     this.paused = false;
 }
-
-
 
 Player.prototype.onMplayerOutput = function(line) {
     if (this.playStatus == "init") {
@@ -111,6 +124,16 @@ Player.prototype.parseMplayerProgress = function(line) {
     return progress;
 }
 
+
+Player.prototype.sendProgress = function(res) {
+    if (this.progress) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end('{"progress":'+JSON.stringify(this.progress)+'}');
+    } else {
+        res.writeHead(412, {"Content-Type": "application/json"});
+        res.end('{"error": "no progress, as nothing is played atm."}');    
+    }
+}
 
 // exported instance
 var player = new Player();
