@@ -5,7 +5,7 @@ function Player(typeName) {
     this.progress = null;
 }
 
-Player.prototype.transfereFromPlayer(player) {
+Player.prototype.transfereFromPlayer = function(player) {
     this.play(player.track);
     this.jumpTo(player.progress.current)
     
@@ -16,10 +16,10 @@ Player.prototype.play = function(url) {
         this.track = url;
         this.stop();
         if (url != null) {
-            this.continuePalying();
+            this.continuePlaying();
         }
     } else {
-        this.continuePalying();
+        this.continuePlaying();
     }
 }
 

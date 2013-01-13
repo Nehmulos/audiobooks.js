@@ -3,10 +3,14 @@ function WebPlayer() {
 }
 WebPlayer.prototype = new Player();
 
-WebPlayer.prototype.play = function(url) {
-    Player.prototype.play.call(this, url);
+WebPlayer.prototype.setTrack = function(url) {
+    Player.prototype.setTrack.call(this, url);
     var audioElement = $("#audioPlayer").get(0);
     audioElement.src = url + "?stream";
+}
+
+WebPlayer.prototype.continuePlaying = function() {
+    Player.prototype.continuePlaying.call(this);
     audioElement.play();
 }
 

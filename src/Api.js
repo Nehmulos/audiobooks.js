@@ -61,7 +61,7 @@ Api.prototype.sendArtistList = function(res, artist) {
         var jsonObject = {};
         jsonObject.authors = array;
         res.writeHead(200, {"Content-Type": "application/json"});
-        res.write(JSON.stringify(jsonObject), "binary");
+        res.write(JSON.stringify(jsonObject), "utf8");
         res.end();
     });
 }
@@ -71,7 +71,7 @@ Api.prototype.sendBookList = function(res, artist) {
         var jsonObject = {};
         jsonObject.books = array;
         res.writeHead(200, {"Content-Type": "application/json"});
-        res.write(JSON.stringify(jsonObject), "binary");
+        res.write(JSON.stringify(jsonObject), "utf8");
         res.end();
     });
 }
@@ -123,7 +123,7 @@ Api.prototype.sendTrackList = function(res, artist, book) {
             if (unprocessedCds <= 0) {
                 console.log(JSON.stringify(jsonObject));
                 res.writeHead(200, {"Content-Type": "application/json"});
-                res.write(JSON.stringify(jsonObject), "binary");
+                res.write(JSON.stringify(jsonObject), "utf8");
                 res.end();
             }
         }

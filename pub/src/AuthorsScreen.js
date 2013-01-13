@@ -64,6 +64,7 @@ AuthorsScreen.prototype.createNodes = function() {
     } else {
         $.getJSON("api/authors.json", function(data) {
             console.log(data);
+            data.authors.sort();
             app.fileCache.authors = data;
             buildNodesFromJson(data);
         });
