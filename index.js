@@ -16,6 +16,6 @@ http.createServer(function(req, res)
     } else {
         fileSever.sendFile(res, uri.pathname);
     }
-}).listen(port, "127.0.0.1");
+}).listen(port);
 
 console.log("started audiobooks service at 127.0.0.1:" + port);
