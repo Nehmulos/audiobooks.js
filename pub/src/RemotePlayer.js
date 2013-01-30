@@ -3,14 +3,15 @@ function RemotePlayer() {
 }
 RemotePlayer.prototype = new Player();
 
-Player.prototype.stop = function() {
+RemotePlayer.prototype.stop = function() {
     $.getJSON("api/stop", function(data) {
         console.log(data);
         this.mplayerInstanceExists = false;
     });
 }
 
-RemotePlayer.prototype.setTrack = function(url) {
+// TODO use startTime for mplayer -ss $starttime option
+RemotePlayer.prototype.setTrack = function(url, startTime) {
     Player.prototype.setTrack.call(this);
     $.getJSON("api/play?" + url, function(data) {
         console.log(data);

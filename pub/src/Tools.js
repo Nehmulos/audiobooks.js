@@ -13,16 +13,16 @@ Tools.prototype.cleanCache = function() {
 }
 
 Tools.prototype.togglePlayer = function() {
-    var track = app.player.track;
+    var newPlayer;
     app.player.pause();
     
     if (app.player.typeName == "WebPlayer") {
-        app.player = new RemotePlayer();
+        newPlayer = new RemotePlayer();
     } else {
-        app.player = new WebPlayer();
+        newPlayer = new WebPlayer();
     }
-    
-    if (track) {
-        app.player.play(track)
-    }
+
+    newPlayer.transfereFromPlayer(app.player);
+    app.player.stop();
+    app.player = newPlayer;
 }
