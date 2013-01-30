@@ -24,7 +24,7 @@ WebPlayer.prototype.pause = function() {
 
 WebPlayer.prototype.stop = function() {
     var audioElement = $("#audioPlayer").get(0);
-    audioElement.stop();
+    audioElement.pause();
     audioElement.src = "";
 }
 
