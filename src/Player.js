@@ -70,6 +70,7 @@ Player.prototype.playWithMplayer = function(url) {
 
     var _this = this;
     console.log("play"+url);
+    this.track = url;
     this.mplayerProcess = spawn("mplayer", [url]); // escapes spaces, too.
     this.mplayerProcess.stdout.on("data", function(data) {
         _this.onMplayerOutput(data);
@@ -96,7 +97,7 @@ Player.prototype.onMplayerOutput = function(line) {
             console.log("endofFile");
         } else {
             this.progress = this.parseMplayerProgress("" + line);
-            console.log(this.progress);
+            //console.log(this.progress);
         }
     } else if (this.playStatus == "ended") {
         this.mplayerProcess = null;
