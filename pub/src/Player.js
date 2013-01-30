@@ -16,7 +16,7 @@ Player.prototype.setTrack = function(url) {
 
 Player.prototype.playList = function(list) {
     this.stop();
-    this.tracklist = list;
+    this.trackList = list;
     this.playNextTrack();
 }
 
@@ -44,7 +44,7 @@ Player.prototype.onTrackEnded = function() {
 }
 
 Player.prototype.playNextTrack = function() {
-    if (this.trackList.length > 1) {
+    if (this.trackList.length > 0) {
         this.play(this.trackList[0]);
         this.trackList.splice(0,1);
     }
