@@ -36,18 +36,21 @@ TrackScreen.prototype.createNodes = function() {
 
 TrackScreen.prototype.buildNodesFromJson = function(data) {
     var _this = this;
-    $.each(data.cds, function(key, cd) {
+    this.data = data;
+    $.each(data.cds, function(cdIndex, cd) {
         var cdName = this.name;
         var $cdDiv = $("<div>"+ cdName +"</div>");
         var $cdList = $("<ol/>");
         $("#main").append($cdDiv);
         $cdDiv.append($cdList);
             
-        $.each(cd.tracks, function() {
+        $.each(cd.tracks, function(trackIndex) {
             var $trackLi = $("<li/>");
             var $playTrackLink = $("<a class='PlayTrackLink' href='"+window.location.hash+"'>"+this+"</a>");
             $playTrackLink.text(this); 
             $playTrackLink.attr("data-cd", cdName);
+            $playTrackLink.attr("data-cd-index", cdIndex);
+            $playTrackLink.attr("data-track-index", trackIndex);
             $playTrackLink.attr("data-track", this);
             $playTrackLink.attr("data-file", "books/" + _this.author + "/" +
                                 _this.book + "/" + cdName + "/" + this);
@@ -57,8 +60,24 @@ TrackScreen.prototype.buildNodesFromJson = function(data) {
     });
     
     $(".PlayTrackLink").click(function() {
-        var tracks = [];
-        tracks.push($(this).attr("data-file"));
+        var trackIndex = parseInt($(this).attr("data-track-index"));
+        var cdIndex = parseInt($(this).attr("data-cd-index"));
+        var tracks = _this.data.cds[cdIndex].tracks.slice(trackIndex);
+        
+        var tracksToPaths = function(array, cdName) {
+            for (var i=0; i < array.length; ++i) {
+                array[i] = "books/" + _this.author + "/" +
+                             _this.book + "/" + cdName + "/" + array[i];
+            }
+        }
+        tracksToPaths(tracks, _this.data.cds[cdIndex].name);
+        
+        for (var i=cdIndex+1; i < _this.data.cds.length; ++i) {
+            var cdPaths = _this.data.cds[i].tracks.slice();
+            tracksToPaths(cdPaths, _this.data.cds[i].name);
+            tracks = tracks.concat(cdPaths);
+        }
+        
         app.player.playList(tracks);
     });
 }
