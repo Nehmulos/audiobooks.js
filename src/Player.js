@@ -90,8 +90,7 @@ Player.prototype.onMplayerOutput = function(line) {
         }
     } else if (this.playStatus == "playing") {
         // mplayer will output 3 new lines after a file reached the end
-        // after a few seconds it will output something that matches:
-        // /Exiting\.\.\. \(End of file\)/.test(line)
+        // after that either the next file will be played, or mplayer will exit
         if (/^\n\n\n*$/.test(line)) {
             this.playStatus = "ended";
             console.log("endofFile");
@@ -100,8 +99,13 @@ Player.prototype.onMplayerOutput = function(line) {
             //console.log(this.progress);
         }
     } else if (this.playStatus == "ended") {
-        this.mplayerProcess = null;
-        console.log("exit mplayer");
+        console.log("" +line);
+        if (/Exiting\.\.\. \(End of file\)/.test(line)) {
+            this.mplayerProcess = null;
+            console.log("exit mplayer");        
+        } else if (/Playing /.text(line)) {
+            this.playStatus = "init";
+        }
     } else {
         console.log("don't know how to handle mplayer output: " + line);
     }
