@@ -121,7 +121,7 @@ Api.prototype.sendTrackList = function(res, artist, book) {
 
             --unprocessedCds;
             if (unprocessedCds <= 0) {
-                console.log(JSON.stringify(jsonObject));
+                //console.log(JSON.stringify(jsonObject));
                 res.writeHead(200, {"Content-Type": "application/json"});
                 res.write(JSON.stringify(jsonObject), "utf8");
                 res.end();
