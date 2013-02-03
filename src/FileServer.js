@@ -10,7 +10,7 @@ function FileServer() {
 FileServer.prototype.resolveUrl = function(relativePath) {
     var baseDir = path.join(process.cwd(), "pub");
     url = path.join(baseDir, relativePath);
-    url = url.replace(/(\%20)/g, " ");
+    url = decodeURIComponent(url);
     url = path.normalize(url);
     
     // only return paths in pub
