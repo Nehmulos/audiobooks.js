@@ -4,7 +4,7 @@ function Application() {
     this.fileCache.author = [];
     this.toolbar = new Toolbar();
     this.tools = new Tools();
-    if (localStorage.getItem("abp_playerType") === "remote") {
+    if (localStorage.getItem("abp_playerType") === "RemotePlayer") {
         this.player = new RemotePlayer();
     } else {
         this.player = new WebPlayer();

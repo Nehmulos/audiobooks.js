@@ -24,5 +24,6 @@ Tools.prototype.togglePlayer = function() {
 
     //newPlayer.transfereFromPlayer(app.player);
     //app.player.stop();
+    localStorage.setItem("abp_playerType", newPlayer.typeName);
     app.player = newPlayer;
 }
