@@ -64,6 +64,9 @@ Api.prototype.handleUri = function(res, uri) {
 
     } else if (uri.pathname == "/api/getProgress") {
         player.sendProgress(res);
+        
+    } else if (uri.pathname == "/api/getPlayStatus") {
+        player.sendPlayStatus(res);
 
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});

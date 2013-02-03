@@ -129,13 +129,14 @@ Player.prototype.playWithMplayer = function(url) {
         _this.onMplayerOutput(data);
     });
     this.mplayerProcess.stderr.on("data", function(data) {
-        //console.log("ERROR: " +data);
+        console.log("ERROR: " +data);
     });
     this.playStatus = "init";
     this.paused = false;
 }
 
 Player.prototype.onMplayerOutput = function(line) {
+    //console.log("LINE" + line);
     if (this.playStatus == "init") {
         if (/Starting playback\.\.\.\s$/.test(line)) {
             this.playStatus = "playing";
@@ -144,7 +145,7 @@ Player.prototype.onMplayerOutput = function(line) {
     } else if (this.playStatus == "playing") {
         // mplayer will output 3 new lines after a file reached the end
         // after that either the next file will be played, or mplayer will exit
-        if (/^\n\n\n*$/.test(line)) {
+        if (/\n\n/.test(line)) {
             this.playStatus = "ended";
             console.log("endofFile");
         } else {
@@ -152,8 +153,7 @@ Player.prototype.onMplayerOutput = function(line) {
             //console.log(this.progress);
         }
     } else if (this.playStatus == "ended") {
-        //console.log("" +line);
-        
+        console.log("eof message: "  + line)
         if (/Exiting\.\.\. \(End of file\)/.test(line)) {
             this.mplayerProcess = null;
             console.log("exit mplayer");
@@ -162,16 +162,19 @@ Player.prototype.onMplayerOutput = function(line) {
                 console.log("next track" + this.trackList[0]);
             }
             
-        } else if (/Playing /.text(line)) {
+        } else if (/Playing /.test(line)) {
             this.playStatus = "init";
-            var matches = /Playing (.*?)$/.match(line);
-            console.log(matches);
-            if (matches.length == 1 && this.trackList.length > 0 && 
-                matches[0] == this.trackList[0]) {
-                this.track = matches[0];
+            var matches = /Playing (.+)\.\n$/.exec(line);
+            if (matches.length == 2 && this.trackList.length > 0 && 
+                matches[1] == this.trackList[0]) {
+                this.track = matches[1];
                 this.trackList.splice(0,1);
-            } 
+                console.log("playing next track: " + this.track);
+            }
+        } else {
+            console.log("don't know how to handle eof output: "  + line);
         }
+        
     } else {
         console.log("don't know how to handle mplayer output: " + line);
     }
@@ -195,7 +198,6 @@ Player.prototype.parseMplayerProgress = function(line) {
     return progress;
 }
 
-
 Player.prototype.sendProgress = function(res) {
     if (this.progress) {
         res.writeHead(200, {"Content-Type": "application/json"});
@@ -203,7 +205,20 @@ Player.prototype.sendProgress = function(res) {
         return;
     }
     res.writeHead(412, {"Content-Type": "application/json"});
-    res.end('{"error": "no progress, as nothing is played atm."}');    
+    res.end('{"error": "no progress, as nothing is played atm."}');
+}
+
+Player.prototype.sendPlayStatus = function(res) {
+    var ret = {
+        status: this.playStatus,
+        progress: this.progress,
+        paused: this.paused,
+        track: this.track,
+        trackList: this.trackList
+    };
+
+    res.writeHead(200, {"Content-Type": "application/json"});
+    res.end('{"progress":'+JSON.stringify(ret)+'}');
 }
 
 // exported instance
