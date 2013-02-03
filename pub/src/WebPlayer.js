@@ -1,5 +1,7 @@
 function WebPlayer() {
     Player.prototype.constructor.call(this, "WebPlayer");
+    
+    $(".tool.toggleSpeakersButton").attr("src", "img/speakerIcon.png");
 }
 WebPlayer.prototype = new Player();
 

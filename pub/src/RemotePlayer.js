@@ -16,6 +16,8 @@ function RemotePlayer() {
         }
     }
     window.setInterval(this.progressUpdater, 1000);
+    
+    $(".tool.toggleSpeakersButton").attr("src", "img/headsetIcon.png");
 }
 RemotePlayer.prototype = new Player();
 
