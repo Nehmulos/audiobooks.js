@@ -65,6 +65,19 @@
             </ul>
         </div>
         <div id="main">You must enable Javascript, otherwiese this page won't work</div>
-        <div id="footer"><audio id="audioPlayer" controls="seeking"/></div>
+        <div id="footer">
+            <div class="customPlayerGui">
+                <span class="nowPlayingText">
+                    <span class="track">Nothing</span>
+                    <span class="dash"> - </span>
+                    <span class="artistIntroduction">by </span>
+                    <span class="artist">Nobody</span>
+                <span/>
+                <span class="stopButton">[s]</span>
+                <span class="togglePauseButton disabled play">II</span>
+                <progress class="progressBar" value="50" max="100"></progress>
+            </div>
+            <audio id="audioPlayer" controls="seeking" style="display:none;"></audio>
+        </div>
     </body>
 </html>

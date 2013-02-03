@@ -71,12 +71,14 @@ body a {
 }
 
 #footer {
+    display: table-cell;
+    min-height: 1em;
     color:#FFF;
     text-align:center;
+    vertical-align: middle;
     position:fixed;
     bottom:0px;
     width:100%;
-    margin-top:100px;
     
     background-image: linear-gradient(bottom, #000000 16%, #45484D 75%);
     background-image: -o-linear-gradient(bottom, #000000 16%, #45484D 75%);
@@ -91,6 +93,10 @@ body a {
 	    color-stop(0.16, #000000),
 	    color-stop(0.75, #45484D)
     );
+}
+
+#footer .progressBar {
+    height: 1em;
 }
 
 #radioList {
