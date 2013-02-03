@@ -25,4 +25,5 @@ Tested in Chromium 20 and Firefox 17.
 It will probably also work with newer versions of node.js and 
 other up2date html5 browers.
 
-Most basic Html5 audio playback and browsing books works, nothing else confirmed
+Browsing books and simple mplayer list playback works, nothing else confirmed.
+Html5 audiotag playback is broken atm.
