@@ -7,17 +7,30 @@ function Player(typeName) {
 }
 
 Player.prototype.transfereFromPlayer = function(player) {
-    //this.play(player.track, player.progress.current);
-    //this.setTrackList(player.trackList);
-    this.setTrackList([player.track].concat(player.trackList));
-    this.play();
-//    if (player.status == "paused") {
-//        this.pause();
-//    }
+    var tracks;
+    if (player.track) {
+        tracks = [player.track].concat(player.trackList);
+    } else {
+        tracks = player.trackList;
+    }
+    
+    if (tracks.length > 0) {
+        this.setTrackList(tracks);
+        if (player.status == "playing") {
+            this.play();
+        }
+    }
 }
 
 Player.prototype.setTrack = function(url) {
     this.track = url;
+    if (url) {
+        var trackName = url;
+        if (/([^\/]+)\..*$/.test(url)) {
+            url = /([^\/]+)\..*$/.exec(url)[1];
+        }
+    }
+    $(".nowPlayingText .track").text(url);
 }
 
 Player.prototype.setTrackList = function(trackList) {
@@ -46,8 +59,14 @@ Player.prototype.play = function(url, startTime) {
     }
 }
 
+Player.prototype.setProgress = function(progress) {
+    progress = progress || {current:0, max: 100};
+    $(".playerGui .progressBar").attr("value", progress.current);
+    $(".playerGui .progressBar").attr("max", progress.length);
+}
+
 Player.prototype.stop = function(url) {
-    this.track = null;
+    this.setTrack(null);
 }
 
 Player.prototype.continuePlaying = function() {

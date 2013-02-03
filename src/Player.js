@@ -165,10 +165,12 @@ Player.prototype.onMplayerOutput = function(line) {
         } else if (/Playing /.test(line)) {
             this.playStatus = "init";
             var matches = /Playing (.+)\.\n$/.exec(line);
-            if (matches.length == 2 && this.trackList.length > 0 && 
-                matches[1] == this.trackList[0]) {
+            if (matches.length == 2 && this.trackList.length > 0) {
                 this.track = matches[1];
-                this.trackList.splice(0,1);
+                if (matches[1] == this.trackList[0]) {
+                    this.trackList.splice(0,1);
+                    console.log("spliced tracklist (0,1)");
+                }
                 console.log("playing next track: " + this.track);
             }
         } else {
@@ -218,7 +220,7 @@ Player.prototype.sendPlayStatus = function(res) {
     };
 
     res.writeHead(200, {"Content-Type": "application/json"});
-    res.end('{"progress":'+JSON.stringify(ret)+'}');
+    res.end(JSON.stringify(ret));
 }
 
 // exported instance

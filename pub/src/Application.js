@@ -4,7 +4,12 @@ function Application() {
     this.fileCache.author = [];
     this.toolbar = new Toolbar();
     this.tools = new Tools();
-    this.player = new WebPlayer();
+    if (localStorage.getItem("abp_playerType") === "remote") {
+        this.player = new RemotePlayer();
+    } else {
+        this.player = new WebPlayer();
+    }
+    this.playerGui = new PlayerGui();
 }
 
 Application.prototype.setScreenFromLocationHash = function()

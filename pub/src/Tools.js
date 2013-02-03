@@ -14,7 +14,7 @@ Tools.prototype.cleanCache = function() {
 
 Tools.prototype.togglePlayer = function() {
     var newPlayer;
-    app.player.pause();
+    //app.player.pause();
     
     if (app.player.typeName == "WebPlayer") {
         newPlayer = new RemotePlayer();
@@ -22,7 +22,7 @@ Tools.prototype.togglePlayer = function() {
         newPlayer = new WebPlayer();
     }
 
-    newPlayer.transfereFromPlayer(app.player);
-    app.player.stop();
+    //newPlayer.transfereFromPlayer(app.player);
+    //app.player.stop();
     app.player = newPlayer;
 }

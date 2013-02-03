@@ -1,12 +1,23 @@
 function RemotePlayer() {
     Player.prototype.constructor.call(this, "RemotePlayer");
+    
+    this.fetchPlayStatus();
 }
 RemotePlayer.prototype = new Player();
+
+RemotePlayer.prototype.fetchPlayStatus = function() {
+    var _this = this;
+    $.getJSON("api/getPlayStatus", function(data) {
+        Player.prototype.setTrack.call(_this, data.track);
+        Player.prototype.setProgress.call(_this, data.progress);
+        Player.prototype.setTrackList.call(_this, data.trackList);
+        _this.paused = data.paused;
+    });
+}
 
 RemotePlayer.prototype.stop = function(callback) {
     
     var gotJson = function(data) {
-        console.log(data);
         this.mplayerInstanceExists = false;
         if (callback) {
             callback();
@@ -14,13 +25,6 @@ RemotePlayer.prototype.stop = function(callback) {
     };
 
     $.getJSON("api/stop", gotJson).error(gotJson);
-}
-
-// TODO use startTime for mplayer -ss $starttime option
-// TODO deprecated use setTrackList
-RemotePlayer.prototype.setTrack = function(url, startTime) {
-    Player.prototype.setTrack.call(this);
-    //this.setTrackList([url]);
 }
 
 RemotePlayer.prototype.setTrackList = function(url, callback) {
@@ -46,10 +50,13 @@ RemotePlayer.prototype.continuePlaying = function() {
     });
 }
 
-RemotePlayer.prototype.pause = function() {
+RemotePlayer.prototype.pause = function(callback) {
     Player.prototype.pause.call(this);
-    $.getJSON("api/togglePause", function(data) {
+    $.getJSON("api/pause", function(data) {
         console.log(data);
+        if (callback) {
+            callback();
+        }
     });
 }
 

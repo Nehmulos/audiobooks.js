@@ -99,6 +99,13 @@ body a {
     height: 1em;
 }
 
+.playerGui .disabled {
+    color: #777;
+}
+
+.nowPlayingText {
+}
+
 #radioList {
     position: fixed;
     right:0px;
