@@ -7,7 +7,8 @@ function RemotePlayer() {
     this.progressUpdater = function() {
         if (_this.status == "playing") {
             if (_this.progress.current >= _this.progress.length) {
-                _this.fetchProgress();
+                //_this.fetchProgress();
+                _this.fetchPlayStatus();
             } else {
                 _this.progress.current += 1;
                 _this.setProgress(_this.progress);
