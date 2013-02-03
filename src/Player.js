@@ -65,7 +65,7 @@ Player.prototype.togglePause = function(res) {
         return;
     }
     res.writeHead(412, {"Content-Type": "application/json"});
-    res.end('{"status": "no track"}');
+    res.end('{"error": "no track"}');
 }
 
 Player.prototype.pause = function(res) {

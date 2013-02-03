@@ -8,20 +8,18 @@ PlayerGui.prototype.init = function() {
     });
     
     $(".playerGui .pauseButton").click(function() {
+        app.player.pause();
         if (!$(this).hasClass("disabled")) {
             $(".playerGui .pauseButton").hide();
-            $(".playerGui .pauseButton").addClass("disabled");
             $(".playerGui .playButton").show();
-            $(".playerGui .playButton").removeClass("disabled");
         }
     });
     
-    $(".playerGui .pauseButton").click(function() {
+    $(".playerGui .playButton").click(function() {
+        app.player.continuePlaying();
         if (!$(this).hasClass("disabled")) {
             $(".playerGui .playButton").hide();
-            $(".playerGui .playButton").addClass("disabled");
             $(".playerGui .pauseButton").show();
-            $(".playerGui .pauseButton").removeClass("disabled");
         }
     });
 }

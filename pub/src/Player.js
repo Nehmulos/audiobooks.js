@@ -1,9 +1,13 @@
+// TODO get rid of this baseclass sillyness. 
+// RemotePlayer and Player are too different and don't share a lot.
+// put stuff from here into playerGui to update the gui
+
 function Player(typeName) {
     this.typeName = typeName;
     this.track = null;
     this.trackList = [];
     this.status = "paused";
-    this.progress = null;
+    this.progress = {current: 0, length: 100};
 }
 
 Player.prototype.transfereFromPlayer = function(player) {
@@ -29,8 +33,27 @@ Player.prototype.setTrack = function(url) {
         if (/([^\/]+)\..*$/.test(url)) {
             url = /([^\/]+)\..*$/.exec(url)[1];
         }
+        $(".playerGui .pauseButton").removeClass("disabled");
+        $(".playerGui .playButton").removeClass("disabled");
+    } else {
+        $(".playerGui .pauseButton").addClass("disabled");
+        $(".playerGui .playButton").addClass("disabled");
     }
     $(".nowPlayingText .track").text(url);
+}
+
+Player.prototype.setStatus = function(status) {
+    this.status = status;
+    if (status == "paused") {
+        $(".playerGui .pauseButton").hide();
+        $(".playerGui .playButton").show();
+    } else if (status == "playing") {
+        $(".playerGui .pauseButton").show();
+        $(".playerGui .playButton").hide();
+    } else {
+        $(".playerGui .pauseButton").addClass("disabled");
+        $(".playerGui .playButton").addClass("disabled");
+    }
 }
 
 Player.prototype.setTrackList = function(trackList) {
@@ -61,6 +84,7 @@ Player.prototype.play = function(url, startTime) {
 
 Player.prototype.setProgress = function(progress) {
     progress = progress || {current:0, max: 100};
+    this.progress = progress;
     $(".playerGui .progressBar").attr("value", progress.current);
     $(".playerGui .progressBar").attr("max", progress.length);
 }
@@ -70,7 +94,7 @@ Player.prototype.stop = function(url) {
 }
 
 Player.prototype.continuePlaying = function() {
-
+    
 }
 
 Player.prototype.onTrackEnded = function() {
