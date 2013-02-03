@@ -1,5 +1,5 @@
 // TODO get rid of this baseclass sillyness. 
-// RemotePlayer and Player are too different and don't share a lot.
+// RemotePlayer and WebPlayer are too different and don't share a lot.
 // put stuff from here into playerGui to update the gui
 
 function Player(typeName) {
