@@ -6,20 +6,49 @@ var fs = require("fs"),
 
 function Player() {
     this.track = null;
+    this.trackList = [];
     this.progress = null;
     this.playStatus = "none";
     this.mplayerProcess = null;
-    this.paused = false;
+    this.paused = true;
 }
 
 Player.prototype.play = function(res, url) {
-    if (url.substr(0, 7) != "http://") {
+    if (!url) {
+        if (res) {
+            res.writeHead(400, {"Content-Type": "application/json"});
+            res.end('{"status": "no url:string or urls:arrayOfStr provided"}');
+        }
+        return;
+    }
+    console.log("play " + url);
+    
+    if (typeof url === "string" && url.substr(0, 7) != "http://") {
         url = fileServer.resolveUrl(url);
+    } else if (Object.prototype.toString.call(url) === "[object Array]") {
+        // TODO strip --options
+        for (var i=0; i < url.length; ++i) {
+            if (url[i].substr(0, 7) != "http://") {
+                url[i] = fileServer.resolveUrl(url[i]);
+            }
+        }
     }
         
     this.playWithMplayer(url);
-    res.writeHead(200, {"Content-Type": "application/json"});
-    res.end('{"status": "started"}');
+    if (res) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end('{"status": "started"}');
+    }
+}
+
+Player.prototype.setTrackList = function(res, trackList) {
+    this.trackList = trackList;
+    console.log("set track list "+ this.trackList);
+    
+    if (res) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end('{"status": "Tracklist set, not playing, yet."}');
+    }
 }
 
 Player.prototype.togglePause = function(res) {
@@ -29,6 +58,11 @@ Player.prototype.togglePause = function(res) {
         var status = this.paused ? "paused" : "playing";
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{"status": "'+status+'"}');
+        return;
+    }
+    if (this.trackList.length > 0) {
+        this.play(res, this.trackList);
+        return;
     }
     res.writeHead(412, {"Content-Type": "application/json"});
     res.end('{"status": "no track"}');
@@ -56,27 +90,46 @@ Player.prototype.stop = function(res) {
     if (this.mplayerProcess) {
         this.mplayerProcess.kill();
         this.mplayerProcess = null;
-        res.writeHead(200, {"Content-Type": "application/json"});
-        res.end('{"status": "stopped"}');
+        this.paused = true;
+        if (res) {
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end('{"status": "stopped"}');
+        }
+        return;
     }
-    res.writeHead(412, {"Content-Type": "application/json"});
-    res.end('{"status": "no track"}');
+    if (res) {
+        res.writeHead(412, {"Content-Type": "application/json"});
+        res.end('{"status": "no track"}');
+    }
 }
 
 Player.prototype.playWithMplayer = function(url) {
     if (this.mplayerProcess) {
-        this.mplayerProcess.kill();
+        this.stop(null);
     }
 
     var _this = this;
-    console.log("play"+url);
-    this.track = url;
-    this.mplayerProcess = spawn("mplayer", [url]); // escapes spaces, too.
+    console.log("mplayer play: "+url);
+    
+    if (Object.prototype.toString.call(url) === "[object Array]") {
+        if (url.length <= 0) {
+            return;
+        }
+        this.track = url[0];
+        this.trackList = url;
+        this.mplayerProcess = spawn("mplayer", url); // escapes spaces, too.
+        url.splice(0, 1);
+    
+    } else if (typeof url === "string") {
+        this.track = url;
+        this.mplayerProcess = spawn("mplayer", [url]); // escapes spaces, too.
+    }
+    
     this.mplayerProcess.stdout.on("data", function(data) {
         _this.onMplayerOutput(data);
     });
     this.mplayerProcess.stderr.on("data", function(data) {
-        console.log("ERROR: " +data);
+        //console.log("ERROR: " +data);
     });
     this.playStatus = "init";
     this.paused = false;
@@ -99,12 +152,25 @@ Player.prototype.onMplayerOutput = function(line) {
             //console.log(this.progress);
         }
     } else if (this.playStatus == "ended") {
-        console.log("" +line);
+        //console.log("" +line);
+        
         if (/Exiting\.\.\. \(End of file\)/.test(line)) {
             this.mplayerProcess = null;
-            console.log("exit mplayer");        
+            console.log("exit mplayer");
+            if (this.trackList.length > 0) {
+                this.play(null, this.trackList[0]);
+                console.log("next track" + this.trackList[0]);
+            }
+            
         } else if (/Playing /.text(line)) {
             this.playStatus = "init";
+            var matches = /Playing (.*?)$/.match(line);
+            console.log(matches);
+            if (matches.length == 1 && this.trackList.length > 0 && 
+                matches[0] == this.trackList[0]) {
+                this.track = matches[0];
+                this.trackList.splice(0,1);
+            } 
         }
     } else {
         console.log("don't know how to handle mplayer output: " + line);
@@ -134,10 +200,10 @@ Player.prototype.sendProgress = function(res) {
     if (this.progress) {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{"progress":'+JSON.stringify(this.progress)+'}');
-    } else {
-        res.writeHead(412, {"Content-Type": "application/json"});
-        res.end('{"error": "no progress, as nothing is played atm."}');    
+        return;
     }
+    res.writeHead(412, {"Content-Type": "application/json"});
+    res.end('{"error": "no progress, as nothing is played atm."}');    
 }
 
 // exported instance

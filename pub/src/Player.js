@@ -7,17 +7,27 @@ function Player(typeName) {
 }
 
 Player.prototype.transfereFromPlayer = function(player) {
-    this.play(player.track, player.progress.current);
+    //this.play(player.track, player.progress.current);
+    //this.setTrackList(player.trackList);
+    this.setTrackList([player.track].concat(player.trackList));
+    this.play();
+//    if (player.status == "paused") {
+//        this.pause();
+//    }
 }
 
 Player.prototype.setTrack = function(url) {
     this.track = url;
 }
 
+Player.prototype.setTrackList = function(trackList) {
+    this.trackList = trackList;
+}
+
 Player.prototype.playList = function(list) {
     this.stop();
-    this.trackList = list;
-    this.playNextTrack();
+    this.setTrackList(list);
+    this.play();
 }
 
 Player.prototype.play = function(url, startTime) {
@@ -26,8 +36,10 @@ Player.prototype.play = function(url, startTime) {
         if (url != null) {
             this.continuePlaying();
         }
-    } else {
+    } else if (this.track) {
         this.continuePlaying();
+    } else {
+        this.playNextTrack();
     }
 }
 
@@ -45,8 +57,9 @@ Player.prototype.onTrackEnded = function() {
 
 Player.prototype.playNextTrack = function() {
     if (this.trackList.length > 0) {
-        this.play(this.trackList[0]);
+        var track = this.trackList[0];
         this.trackList.splice(0,1);
+        this.play(track);
     }
 }
 

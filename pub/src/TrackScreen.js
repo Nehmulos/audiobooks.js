@@ -11,7 +11,7 @@ TrackScreen.prototype.createNodes = function() {
     
     //TODO don't use this shitty way of cache checking, use a proper getter
     if(app.fileCache.author[this.author] && app.fileCache.author[this.author].book) {
-        buildNodesFromJson(app.fileCache.author[this.author].book[this.book]);
+        this.buildNodesFromJson(app.fileCache.author[this.author].book[this.book]);
     } else {
         $.getJSON("api/book.json?author=" + _this.author +"&book="+ _this.book, function(data) {
             //data.cds = Utils.sortObject(data.cds);

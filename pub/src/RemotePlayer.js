@@ -11,9 +11,17 @@ RemotePlayer.prototype.stop = function() {
 }
 
 // TODO use startTime for mplayer -ss $starttime option
+// TODO deprecated use setTrackList
 RemotePlayer.prototype.setTrack = function(url, startTime) {
     Player.prototype.setTrack.call(this);
-    $.getJSON("api/play?" + url, function(data) {
+    //this.setTrackList([url]);
+}
+
+RemotePlayer.prototype.setTrackList = function(url) {
+    Player.prototype.setTrackList.call(this, url);
+    var args = {trackList: url};
+    console.log(JSON.stringify(args));
+    $.getJSON("api/setTrackList?" + JSON.stringify(args), function(data) {
         console.log(data);
     });
 }

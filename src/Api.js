@@ -17,34 +17,54 @@ Api.prototype.handleUri = function(res, uri) {
     
     if(uri.pathname == "/api/authors.json" || uri.pathname == "/api/artists.json") {
         this.sendArtistList(res, uri.pathname);
+
     } else if(uri.pathname == "/api/author.json" && uri.search) {
         this.sendBookList(res, uri.query);
+
     } else if(uri.pathname == "/api/book.json" && uri.search) {
         var segments = querystring.parse(uri.query);
         if(!segments["author"] || !segments["book"]) {
             res.end("requsts requires query like: book.json?author=i&book=j");
         } 
         this.sendTrackList(res, segments["author"], segments["book"]);
+
     } else if(uri.query == "stream") {
         console.log("start streaming");
         uri.pathname = uri.pathname.replace(/(\.\.)/g, "");
         streamFile(res, path.join("pub", uri.pathname), req);
+
     } else if (uri.pathname == "/api/normalize") {
         //TODO fix paths on file system change all extensions to lowercase
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{"status": "not implemented on server"}')
+
     } else if (uri.pathname == "/api/play" && uri.query) {
-        player.play(res, uri.query);
+        var args = JSON.parse(decodeURIComponent(uri.query)) || {};
+        if (args.track) {
+            player.play(res, args.track);
+        } else {
+            player.play(res, args.trackList);
+        }
+        
+    } else if (uri.pathname == "/api/setTrackList" && uri.query) {
+        var args = JSON.parse(decodeURIComponent(uri.query));
+        player.setTrackList(res, args.trackList);
+        
     } else if (uri.pathname == "/api/togglePause") {
         player.togglePause(res);
+
     } else if (uri.pathname == "/api/pause") {
         player.pause(res);
+
     } else if (uri.pathname == "/api/unPause") {
         player.unPause(res);
+
     } else if (uri.pathname == "/api/stop") {
         player.stop(res);
+
     } else if (uri.pathname == "/api/getProgress") {
         player.sendProgress(res);
+
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{' +
