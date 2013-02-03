@@ -25,9 +25,12 @@ Player.prototype.setTrackList = function(trackList) {
 }
 
 Player.prototype.playList = function(list) {
-    this.stop();
-    this.setTrackList(list);
-    this.play();
+    var _this = this;
+    this.stop(function() {
+        _this.setTrackList(list, function() {
+            _this.play();
+        });
+    });
 }
 
 Player.prototype.play = function(url, startTime) {

@@ -3,11 +3,17 @@ function RemotePlayer() {
 }
 RemotePlayer.prototype = new Player();
 
-RemotePlayer.prototype.stop = function() {
-    $.getJSON("api/stop", function(data) {
+RemotePlayer.prototype.stop = function(callback) {
+    
+    var gotJson = function(data) {
         console.log(data);
         this.mplayerInstanceExists = false;
-    });
+        if (callback) {
+            callback();
+        }
+    };
+
+    $.getJSON("api/stop", gotJson).error(gotJson);
 }
 
 // TODO use startTime for mplayer -ss $starttime option
@@ -17,13 +23,20 @@ RemotePlayer.prototype.setTrack = function(url, startTime) {
     //this.setTrackList([url]);
 }
 
-RemotePlayer.prototype.setTrackList = function(url) {
+RemotePlayer.prototype.setTrackList = function(url, callback) {
     Player.prototype.setTrackList.call(this, url);
     var args = {trackList: url};
     console.log(JSON.stringify(args));
-    $.getJSON("api/setTrackList?" + JSON.stringify(args), function(data) {
+    
+    var gotJson = function(data) {
         console.log(data);
-    });
+        if (callback) {
+            callback();
+        }
+    };
+    
+    $.getJSON("api/setTrackList?" + JSON.stringify(args), gotJson)
+        .error(gotJson);
 }
 
 RemotePlayer.prototype.continuePlaying = function() {
