@@ -2,7 +2,8 @@ var fs = require("fs"),
     path = require("path"),
     fileServer = require("./FileServer.js"),
     player = require("./Player.js"),
-    querystring = require("querystring");
+    querystring = require("querystring"),
+    exec = require('child_process').exec;
 
 function Api() {
 
@@ -67,6 +68,9 @@ Api.prototype.handleUri = function(res, uri) {
         
     } else if (uri.pathname == "/api/getPlayStatus") {
         player.sendPlayStatus(res);
+
+    } else if (uri.pathname == "/api/setVolume" && uri.query) {
+        this.setVolume(res, uri.query);
 
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
@@ -190,6 +194,31 @@ Api.prototype.getPlayableFileList = function(directory, cdName, callback) {
     });
 }
 
+Api.prototype.setVolume = function(res, volume) {
+
+    if (typeof volume === "string" && !/^[0-9]*$/.test(volume)) {
+        res.writeHead(400, {"Content-Type": "application/json"});
+        res.end('{"error": "invalid volume format. Must be a number (0-100)"}');
+        return;
+    }
+
+    exec("amixer set Master " + volume + "%", function (error, stdout, stderr) {
+        console.log("stdout " + stdout);
+        console.log("stderr " + stderr);
+        if (error != null) {
+            console.log("could not set volume: " + error);
+            
+            var errorObject = {error: ""+error};
+            
+            res.writeHead(500, {"Content-Type": "application/json"});
+            res.end(JSON.stringify(errorObject));
+            return;
+        }
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end('{"status": "volume set to '+ volume + '",' + 
+                ' "volume": "' + volume + '"}');
+    });
+}
 
 /*
     fs.exists(path.join(directory, filename, "cover.png"), function(exists)
