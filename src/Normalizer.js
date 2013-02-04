@@ -1,6 +1,7 @@
 var fs = require("fs"),
     path = require("path"),
     querystring = require("querystring"),
+    gm = require("../node_modules/gm/index.js"),
     exec = require('child_process').exec;
 
 function Normalizer() {
@@ -85,48 +86,35 @@ Normalizer.prototype.generateCoverThumbnails = function(baseDirectory) {
 
 Normalizer.prototype.getImageInfos = function(imagepath, callback) {
 
-    exec("identify \"" + imagepath + "\"", function (error, stdout, stderr) {
-        //console.log("stdout " + stdout);
+    gm(imagepath).size(function(error, value) {
         if (error) {
-            console.log("stderr " + stderr);
-            console.log("could not get img info for '" + imagepath +
-                        "' error:" + error);
+            console.log("can not get size of img: "+ error);
             callback(error);
             return;
         }
-        
-        var infoSlices = stdout.replace(imagepath + " ", "").split(" ");
-        var sizeMatches = /([0-9]+)x([0-9]+)/.exec(infoSlices[1]);
-        //console.log(infoSlices);
-        
+        console.log(value);
         var info = {
             filepath: imagepath,
-            format: infoSlices[0],
-            width: parseInt(sizeMatches[1]),
-            height: parseInt(sizeMatches[2])
+            width: value.width,
+            height: value.height
         }
-        //console.log(info);
+
         callback(null, info);
     });
 }
 
 Normalizer.prototype.convertCoverToThumbnail = function(filepath, directory,
                                                         callback) {
-    
-    exec("convert \"" + filepath + "\" -resize 200x200 \"" + 
-         path.join(directory, "cover.png") + "\"",
-         function (error, stdout, stderr) {
-        
-        if (error) {
-            console.log("stderr " + stderr);
-            console.log("could not convert image '" + filepath +
-                        "' error:" + error);
-            return;
-        }
-        
-        console.log("coverted '" + filepath + "' to '" +
-                    path.join(directory, "cover.png") + "'");
-    });
+                                                        
+        gm(filepath).resize(200, 200).write(path.join(directory, "cover.png"),
+        function (error) {
+            if (error) {
+                console.log("could not write thumbnail: " + filepath);
+                console.log("error: " + error);
+                return;
+            }
+            console.log("converted " + filepath);
+        });
 }
 
 

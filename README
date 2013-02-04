@@ -24,7 +24,7 @@ Server:
 Node.js 0.8.16
 mplayer 1.x (playback serverside)
 amixer (set serverside volume)
-imagemagick 6.7.7 (convert thumbnails)
+graphicsmagick 1.3.17 (convert thumbnails)
 
 Client:
 Tested in Chromium 20 and Firefox 17.
