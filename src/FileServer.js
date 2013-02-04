@@ -30,8 +30,11 @@ FileServer.prototype.isHtmlUrl = function(url) {
 }
 
 FileServer.prototype.isPlayableFile = function(filename) {
-    return new RegExp("(\.ogg)||(\.flac)||(\.opus)||(\.wav)||(\.aac)||(\.mp3)",
+    return new RegExp("(\.ogg)||(\.flac)||(\.opus)||(\.wav)||(\.aac)||(\.mp3)$",
                       "i").test(filename);
+}
+FileServer.prototype.isImage = function(filename) {
+    return /(\.png$|\.jpg|\.jpeg|\.gif|\.bmp)$/i.test(filename)
 }
 
 /// Sends the file or an error message if the file is not accessable 

@@ -2,6 +2,7 @@ var fs = require("fs"),
     path = require("path"),
     fileServer = require("./FileServer.js"),
     player = require("./Player.js"),
+    normalizer = require("./Normalizer.js"),
     querystring = require("querystring"),
     exec = require('child_process').exec;
 
@@ -71,6 +72,9 @@ Api.prototype.handleUri = function(res, uri) {
 
     } else if (uri.pathname == "/api/setVolume" && uri.query) {
         this.setVolume(res, uri.query);
+        
+    } else if (uri.pathname == "/api/createCoverThumbnails") {
+       normalizer.generateCoverThumbnails("pub/books/");
 
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
