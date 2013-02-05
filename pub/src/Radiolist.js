@@ -9,7 +9,6 @@ $(function() {
 
     $(".radioLink").click(function() {
         var stationUrl = $(this).attr("data-url");
-        app.player.setTrackList([stationUrl]);
-        app.player.play();
+        app.player.play(stationUrl);
     });
 });
