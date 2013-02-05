@@ -21,6 +21,17 @@ function RemotePlayer() {
 }
 RemotePlayer.prototype = new Player();
 
+RemotePlayer.prototype.setTrack = function(url) {
+    var _this = this;
+    this.stop(function() {
+        Player.prototype.setTrack.call(_this, url);
+        _this.setTrackList([url], function() {
+            _this.play();
+        });
+    });
+    
+}
+
 RemotePlayer.prototype.fetchProgress = function() {
     var _this = this;
     $.getJSON("api/getProgress", function(data) {
