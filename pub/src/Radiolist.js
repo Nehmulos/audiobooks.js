@@ -8,8 +8,8 @@ $(function() {
     });
 
     $(".radioLink").click(function() {
-        //TODO use the player object
-        $("#audioPlayer").attr("src", $(this).attr("data-url"));
-        $("#audioPlayer").get(0).play();
+        var stationUrl = $(this).attr("data-url");
+        app.player.setTrackList([stationUrl]);
+        app.player.play();
     });
 });
