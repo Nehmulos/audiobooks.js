@@ -115,3 +115,10 @@ RemotePlayer.prototype.updateProgress = function() {
         }
     });
 }
+
+RemotePlayer.prototype.playNextTrack = function() {
+    // asume tracklist is already on server
+    // avoid playing single tracks on remote player,
+    // because that requires an active client
+    this.continuePlaying(); 
+}
