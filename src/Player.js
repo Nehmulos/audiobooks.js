@@ -88,6 +88,10 @@ Player.prototype.unPause = function(res) {
 
 Player.prototype.stop = function(res) {
     this.paused = true;
+    this.track = null;
+    this.trackList = [];
+    this.progress = null;
+    this.playStatus = "none";
     
     if (this.mplayerProcess) {
         this.mplayerProcess.kill();
