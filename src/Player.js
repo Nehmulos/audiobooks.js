@@ -87,10 +87,11 @@ Player.prototype.unPause = function(res) {
 }
 
 Player.prototype.stop = function(res) {
+    this.paused = true;
+    
     if (this.mplayerProcess) {
         this.mplayerProcess.kill();
         this.mplayerProcess = null;
-        this.paused = true;
         if (res) {
             res.writeHead(200, {"Content-Type": "application/json"});
             res.end('{"status": "stopped"}');
