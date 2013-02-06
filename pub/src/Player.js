@@ -97,10 +97,6 @@ Player.prototype.continuePlaying = function() {
     
 }
 
-Player.prototype.onTrackEnded = function() {
-    this.playNextTrack();
-}
-
 Player.prototype.playNextTrack = function() {
     if (this.trackList.length > 0) {
         var track = this.trackList[0];
