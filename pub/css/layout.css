@@ -105,14 +105,15 @@ body a {
 
 .volumeSettings {
     display: inline-block;
+    width: 32px;
 }
 
 .volumeSettings .percentageBar {
     position:absolute;
     height: 200px;
     width: 32px;
-    background: -webkit-linear-gradient(top, #45DD4d 0%,#000 100%);
-    background: -linear-gradient(top, #00DD00 0%,#000 100%);
+    background: -webkit-linear-gradient(top, #45FF4D 0%,#AAA 100%);
+    background: -linear-gradient(top, #45FF4D 0%,#AAA 100%);
 }
 
 .volumeSettings .percentageBar .disabledFill {
