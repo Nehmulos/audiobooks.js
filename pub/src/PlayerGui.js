@@ -45,9 +45,11 @@ PlayerGui.prototype.init = function() {
 }
 
 PlayerGui.prototype.setVolume = function(percent) {
-    $(".volumeSettings .percentageBar .disabledFill").css(
-        "height",
-        (1.0 - percent) * $(this).height()
-    );
+    $(".volumeSettings .percentageBar").each(function() {
+        $(this).find(".disabledFill").css(
+            "height",
+            (1.0 - percent) * $(this).height()
+        );    
+    });
     $(".volumeSettings").attr("data-volume:", percent);
 }
