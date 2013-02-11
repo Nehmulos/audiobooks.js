@@ -72,3 +72,7 @@ WebPlayer.prototype.jumpTo = function(secTime, callback) {
         callback();
     }
 }
+
+WebPlayer.prototype.setVolume = function(volumePercent) {
+    this.audioTag.get(0).volume = volumePercent;
+}

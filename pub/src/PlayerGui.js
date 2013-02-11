@@ -39,5 +39,6 @@ PlayerGui.prototype.init = function() {
         var percent = event.offsetY / $(this).height();
         $(this).find(".disabledFill").css("height", percent * $(this).height());
         $(this).parent().attr("data-volume:", 1.0-percent);
+        app.player.setVolume(1.0-percent);
     });
 }

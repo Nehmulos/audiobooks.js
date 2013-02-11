@@ -122,3 +122,10 @@ RemotePlayer.prototype.playNextTrack = function() {
     // because that requires an active client
     this.continuePlaying(); 
 }
+
+RemotePlayer.prototype.setVolume = function(volumePercent) {
+    var volume = Math.floor(volumePercent * 100);
+    $.getJSON("api/setVolume?" + volume, function(data) {
+        console.log(data);
+    });
+}
