@@ -3,6 +3,7 @@ function PlayerGui() {
 }
 
 PlayerGui.prototype.init = function() {
+    var _this = this;
     $(".playerGui .stopButton").click(function() {
         app.player.stop();
     });
@@ -37,9 +38,16 @@ PlayerGui.prototype.init = function() {
     
     $(".volumeSettings .percentageBar").click(function(event) {
         var clickY = event.pageY - $(this).offset().top;
-        var percent = clickY / $(this).height();
-        $(this).find(".disabledFill").css("height", percent * $(this).height());
-        $(this).parent().attr("data-volume:", 1.0-percent);
-        app.player.setVolume(1.0-percent);
+        var percent = 1.0 - clickY / $(this).height();
+        _this.setVolume(percent);
+        app.player.setVolume(percent);
     });
+}
+
+PlayerGui.prototype.setVolume = function(percent) {
+    $(".volumeSettings .percentageBar .disabledFill").css(
+        "height",
+        (1.0 - percent) * $(this).height()
+    );
+    $(".volumeSettings").attr("data-volume:", percent);
 }

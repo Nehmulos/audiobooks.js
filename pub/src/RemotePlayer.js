@@ -2,6 +2,7 @@ function RemotePlayer() {
     Player.prototype.constructor.call(this, "RemotePlayer");
     
     this.fetchPlayStatus();
+    this.fetchVolume();
     
     var _this = this;
     this.progressUpdater = function() {
@@ -46,6 +47,13 @@ RemotePlayer.prototype.fetchPlayStatus = function() {
         Player.prototype.setProgress.call(_this, data.progress);
         Player.prototype.setTrackList.call(_this, data.trackList);
         _this.setStatus(data.paused ? "paused" : "playing");
+    });
+}
+
+RemotePlayer.prototype.fetchVolume = function() {
+    var _this = this;
+    $.getJSON("api/getVolume", function(data) {
+        app.playerGui.setVolume(data.volume);
     });
 }
 
