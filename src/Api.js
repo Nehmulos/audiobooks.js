@@ -252,7 +252,7 @@ Api.prototype.getVolume = function(res) {
             // send volume of first speaker (in most cases the left one)
             // IMPROVEMENT send a value for each speaker + speakerName
             res.writeHead(200, {"Content-Type": "application/json"});
-            res.end('{"volume": "' + volumeMatches[1] + '"}');
+            res.end('{"volume": ' + volumeMatches[1] + '}');
             return;
         }
         res.writeHead(500, {"Content-Type": "application/json"});
