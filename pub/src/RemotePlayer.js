@@ -53,7 +53,7 @@ RemotePlayer.prototype.fetchPlayStatus = function() {
 RemotePlayer.prototype.fetchVolume = function() {
     var _this = this;
     $.getJSON("api/getVolume", function(data) {
-        app.playerGui.setVolume(data.volume);
+        app.playerGui.setVolume(data.volume/100);
     });
 }
 
