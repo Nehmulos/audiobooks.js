@@ -22,4 +22,22 @@ PlayerGui.prototype.init = function() {
             $(".playerGui .pauseButton").show();
         }
     });
+    
+    $(".volumeSettings").mouseover(function() {
+        var bar = $(this).find(".percentageBar");
+        bar.show();
+        bar.css("top", $(this).position().top - bar.height());
+        bar.css("left", $(this).position().left);
+    });
+    
+    $(".volumeSettings").mouseout(function() {
+        var bar = $(this).find(".percentageBar");
+        bar.hide();
+    });
+    
+    $(".volumeSettings .percentageBar").click(function(event) {
+        var percent = event.offsetY / $(this).height();
+        $(this).find(".disabledFill").css("height", percent * $(this).height());
+        $(this).parent().attr("data-volume:", 1.0-percent);
+    });
 }

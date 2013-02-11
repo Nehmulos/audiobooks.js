@@ -113,3 +113,6 @@ Player.prototype.updateProgress = function() {
     
 }
 
+Player.prototype.setVolume = function() {
+}
+

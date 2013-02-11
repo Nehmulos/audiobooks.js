@@ -103,6 +103,26 @@ body a {
     color: #777;
 }
 
+.volumeSettings {
+    display: inline-block;
+}
+
+.volumeSettings .percentageBar {
+    position:absolute;
+    height: 200px;
+    width: 32px;
+    background: -webkit-linear-gradient(top, #45DD4d 0%,#000 100%);
+    background: -linear-gradient(top, #00DD00 0%,#000 100%);
+}
+
+.volumeSettings .percentageBar .disabledFill {
+    position:relative;
+    height: 50%;
+    width: 100%;
+    background: #000;
+}
+
+
 .nowPlayingText {
 }
 
@@ -112,6 +132,7 @@ body a {
     top:32px;
     z-index: 2;
     background: -webkit-linear-gradient(top, #000000 0%,#45484d 100%);
+    background: -linear-gradient(top, #000000 0%,#45484d 100%);
     color: #FFF;
 }
 
