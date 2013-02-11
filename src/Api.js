@@ -73,6 +73,9 @@ Api.prototype.handleUri = function(res, uri) {
     } else if (uri.pathname == "/api/setVolume" && uri.query) {
         this.setVolume(res, uri.query);
         
+    } else if (uri.pathname == "/api/getVolume") {
+        this.getVolume(res);
+        
     } else if (uri.pathname == "/api/createCoverThumbnails") {
        normalizer.generateCoverThumbnails("pub/books/");
 
@@ -209,7 +212,7 @@ Api.prototype.setVolume = function(res, volume) {
     exec("amixer set Master " + volume + "%", function (error, stdout, stderr) {
         console.log("stdout " + stdout);
         console.log("stderr " + stderr);
-        if (error != null) {
+        if (error) {
             console.log("could not set volume: " + error);
             
             var errorObject = {error: ""+error};
@@ -221,6 +224,39 @@ Api.prototype.setVolume = function(res, volume) {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{"status": "volume set to '+ volume + '",' + 
                 ' "volume": "' + volume + '"}');
+    });
+}
+
+Api.prototype.getVolume = function(res) {
+
+    if (typeof volume === "string" && !/^[0-9]*$/.test(volume)) {
+        res.writeHead(400, {"Content-Type": "application/json"});
+        res.end('{"error": "invalid volume format. Must be a number (0-100)"}');
+        return;
+    }
+
+    exec("amixer get Master", function (error, stdout, stderr) {
+        console.log("stdout " + stdout);
+        console.log("stderr " + stderr);
+        if (error) {
+            console.log("could not get volume: " + error);
+            
+            var errorObject = {error: ""+error};
+            
+            res.writeHead(500, {"Content-Type": "application/json"});
+            res.end(JSON.stringify(errorObject));
+            return;
+        }
+        var volumeMatches = /([0-9]+)%/.exec("" + stdout);
+        if (volumeMatches.length > 1) {
+            // send volume of first speaker (in most cases the left one)
+            // IMPROVEMENT send a value for each speaker + speakerName
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end('{"volume": "' + volumeMatches[1] + '"}');
+            return;
+        }
+        res.writeHead(500, {"Content-Type": "application/json"});
+        res.end('{"status": "could not parse volume","error":"parseError"}');
     });
 }
 
