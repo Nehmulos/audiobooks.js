@@ -36,7 +36,8 @@ PlayerGui.prototype.init = function() {
     });
     
     $(".volumeSettings .percentageBar").click(function(event) {
-        var percent = event.offsetY / $(this).height();
+        var clickY = event.pageY - $(this).offset().top;
+        var percent = clickY / $(this).height();
         $(this).find(".disabledFill").css("height", percent * $(this).height());
         $(this).parent().attr("data-volume:", 1.0-percent);
         app.player.setVolume(1.0-percent);
