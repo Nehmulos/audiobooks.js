@@ -4,4 +4,3 @@
 -cache: store artists, books, tracknames, coverpaths, maybe even coverdata
 -fix node.js audiostreaming
 -get a 404 page which doesn't suck
--set volume ui
