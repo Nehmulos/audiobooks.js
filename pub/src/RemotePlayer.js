@@ -24,8 +24,10 @@ RemotePlayer.prototype = new Player();
 
 RemotePlayer.prototype.setTrack = function(url) {
     var _this = this;
+    
+    Player.prototype.setTrack.call(_this, url);
+    
     this.stop(function() {
-        Player.prototype.setTrack.call(_this, url);
         _this.setTrackList([url], function() {
             _this.play();
         });
@@ -66,6 +68,8 @@ RemotePlayer.prototype.stop = function(callback) {
         }
     };
 
+    Player.prototype.setTrack.call(this, null);
+    Player.prototype.setProgress.call(this, null);
     $.getJSON("api/stop", gotJson).error(gotJson);
 }
 

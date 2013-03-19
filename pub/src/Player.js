@@ -83,7 +83,7 @@ Player.prototype.play = function(url, startTime) {
 }
 
 Player.prototype.setProgress = function(progress) {
-    progress = progress || {current:0, max: 100};
+    progress = progress || {current:0, length: 0};
     this.progress = progress;
     $(".playerGui .progressBar").attr("value", progress.current);
     $(".playerGui .progressBar").attr("max", progress.length);
