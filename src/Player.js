@@ -170,7 +170,7 @@ Player.prototype.onMplayerOutput = function(line) {
             
         } else if (/Playing /.test(line)) {
             this.playStatus = "init";
-            var matches = /Playing (.+)\.\n$/.exec(line);
+            var matches = /Playing (.+)\.\n$/.exec(line) || [];
             if (matches.length == 2 && this.trackList.length > 0) {
                 this.track = matches[1];
                 if (matches[1] == this.trackList[0]) {
@@ -178,6 +178,8 @@ Player.prototype.onMplayerOutput = function(line) {
                     console.log("spliced tracklist (0,1)");
                 }
                 console.log("playing next track: " + this.track);
+            } else {
+                console.log("ERROR: COULD NOT MATCH play line" + line);
             }
         } else {
             console.log("don't know how to handle eof output: "  + line);
