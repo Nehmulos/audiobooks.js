@@ -29,17 +29,39 @@ Player.prototype.transfereFromPlayer = function(player) {
 Player.prototype.setTrack = function(url) {
     var trackName = url;
     var artistName = "nobody";
+    
+    $(".nowPlayingText .track").removeClass("clickable");
+    $(".nowPlayingText .artist").removeClass("clickable");
+    $(".nowPlayingText .track").unbind("click");
+    $(".nowPlayingText .artist").unbind("click");
+    
     this.track = url;
     if (url) {
         var parts = url.split("/");
         if (parts.length >= 4) {
+            var albumName = parts[parts.length-3];
             artistName = parts[parts.length-4];
+            
+            if (/([^\/]+)\..*$/.test(parts[parts.length-1])) {
+                trackName = /([^\/]+)\..*$/.exec(parts[parts.length-1])[1];
+            }
+            
+            $(".nowPlayingText .track").addClass("clickable");
+            $(".nowPlayingText .track").click(function() {
+                window.location.hash = "#!/" + artistName + "/" + albumName;
+            });
+            
+            $(".nowPlayingText .artist").addClass("clickable");
+            $(".nowPlayingText .artist").click(function() {
+                window.location.hash = "#!/" + artistName;
+            });
         }
-        if (/([^\/]+)\..*$/.test(url)) {
-            trackName = /([^\/]+)\..*$/.exec(url)[1];
-        }
+        
         $(".playerGui .pauseButton").removeClass("disabled");
         $(".playerGui .playButton").removeClass("disabled");
+        
+        $(".nowPlayingText .track")
+        
     } else {
         $(".playerGui .pauseButton").addClass("disabled");
         $(".playerGui .playButton").addClass("disabled");

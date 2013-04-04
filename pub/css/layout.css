@@ -168,3 +168,11 @@ body a {
     top:3px;
     right:3px;
 }
+
+.nowPlayingText .clickable {
+    cursor:pointer;
+}
+
+.nowPlayingText .clickable:hover {
+    text-decoration:underline;
+}
