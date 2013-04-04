@@ -27,11 +27,16 @@ Player.prototype.transfereFromPlayer = function(player) {
 }
 
 Player.prototype.setTrack = function(url) {
+    var trackName = url;
+    var artistName = "nobody";
     this.track = url;
     if (url) {
-        var trackName = url;
+        var parts = url.split("/");
+        if (parts.length >= 4) {
+            artistName = parts[parts.length-4];
+        }
         if (/([^\/]+)\..*$/.test(url)) {
-            url = /([^\/]+)\..*$/.exec(url)[1];
+            trackName = /([^\/]+)\..*$/.exec(url)[1];
         }
         $(".playerGui .pauseButton").removeClass("disabled");
         $(".playerGui .playButton").removeClass("disabled");
@@ -39,7 +44,8 @@ Player.prototype.setTrack = function(url) {
         $(".playerGui .pauseButton").addClass("disabled");
         $(".playerGui .playButton").addClass("disabled");
     }
-    $(".nowPlayingText .track").text(url);
+    $(".nowPlayingText .track").text(trackName);
+    $(".nowPlayingText .artist").text(artistName);
 }
 
 Player.prototype.setStatus = function(status) {
