@@ -77,8 +77,9 @@ Api.prototype.handleUri = function(res, uri) {
         this.getVolume(res);
         
     } else if (uri.pathname == "/api/createCoverThumbnails") {
-       normalizer.generateCoverThumbnails("pub/books/");
-
+        normalizer.generateCoverThumbnails("pub/books/", function(covers) {
+            //covers
+        });
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{' +

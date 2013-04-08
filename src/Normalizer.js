@@ -9,7 +9,7 @@ function Normalizer() {
 }
 
 //TODO split into more separate functions
-Normalizer.prototype.generateCoverThumbnails = function(baseDirectory) {
+Normalizer.prototype.generateCoverThumbnails = function(baseDirectory, onDirectoryUncertain) {
     var _this = this;
     var handleDirectory = function(directory) {
         fs.readdir(directory, function(error, files) {
@@ -24,6 +24,11 @@ Normalizer.prototype.generateCoverThumbnails = function(baseDirectory) {
                 var unfetchedImageDataCount = potentialCovers.length;
                 var coverData = [];
                 var bestImage = null;
+                
+                if (potentialCovers.length == 0 && onDirectoryUncertain) {
+                    onDirectoryUncertain({covers:[]});
+                }
+                
                 for (var i=0; i < potentialCovers.length; ++i) {
                     _this.getImageInfos(path.join(directory, potentialCovers[i]),
                         function(error, info) {
