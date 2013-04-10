@@ -13,6 +13,9 @@ Normaliser.prototype.unifyTrackNamesForBook = function(cdDirectory, finishCallba
 
 }
 
+// "1. CD 3 The 1st tale of xyz part 1"
+// "10. CD 12 Another tale"
+// unify to "01. CD 03 The 01st tale of xyz part 01" (paranoid all to 1 length)
 Normaliser.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback) {
     fs.readdir(directory, function(error, files) {
         var unhandledFiles = files.length;
@@ -31,53 +34,39 @@ Normaliser.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback
             });
         }
         
-        // "1. CD 3 The 1st tale of xyz part 1"
-        // "10. CD 12 Another tale"
-        // unify to "01. CD 33 The 1st tale of xyz part 1"
+        var tracksUnprocessed = tracks.length;
+        var checkEnd = function() {
+            tracksUnprocessed--;
+            if (tracksUnprocessed == 0) {
+                finishCallback(null);
+            }
+        }
+        
+        // find longest number
+        var longest = -1
         for (var t=0; t < tracks.length; ++t) {
             var matches = tracks[t].matches;
-            var numberOfMatches = -1;
-            var groups = {};
             
-            // group tracks by count of numberGroups /([0-9]+)/
-            for (var i=1; i < matches.length; ++i) {
-                var m = matches[i];
-                var index = m.length;
-                if (!groups[index]) {
-                    groups[index] = [];
-                }
-                groups[index].push(m);
-            }
-            
-            for (key in groups) {
-                if (key == "length") {
-                    continue;
-                }
-                
-                var occurances = groups[key]
-                
-                // find the longest number for each match
-                // this obscure line creates an array filled with 0
-                var lengths = new Array(occurances.length+1).join('0').split('');
-                for (var i=0; i < occurances.length; ++i) {
-                    if (lengths[i] < occurances[i].length) {
-                        lengths[i] = occurances[i].length;
-                    }
-                }
-                
-                // put 0 infront of matches that are shorter than the longest number
-                for (var i=0; i < lengths.length; ++i) {
-                    if (occurances[i].length < lengths[i]) {
-                        tracks[t].replace(/([0-9]+)/, function(original, j) {
-                            if (j == i) {
-                                return  new Array(lengths[i]+1).join('0');
-                            }
-                            return original;
-                        });
-                    }
+            for (var i=0; i < matches.length; ++i) {
+                if (matches[i].length > longest) {
+                    longest = matches[i].length;
                 }
             }
         }
+
+        // put 0 infront of matches that are shorter than the longest number
+        for (var t=0; t < tracks.length; ++t) {
+            var newName = tracks[t].name.replace(/([0-9]+)/g, function(original, j) {
+                var str = new Array(longest+1).join('0').split('');
+                str.splice(str.length-1-original.length-1, original.length);
+                str = str.concat(original.split(''));
+                return str.join('');
+            });
+            
+            // rename
+            fs.rename(tracks[t].name, newName, checkEnd);
+        }
+        
     }
 }
 
