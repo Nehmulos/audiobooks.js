@@ -80,6 +80,13 @@ Api.prototype.handleUri = function(res, uri) {
         normalizer.generateCoverThumbnails("pub/books/", function(covers) {
             //covers
         });
+        
+    } else if (uri.pathname == "/api/unifyTrackNamesForCd" && uri.search) {
+        // TODO secure paths
+        normalizer.unifyTrackNamesForCd("pub/books/" + uri.search, function(error) {
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end('{"status": "okay"}');
+        });
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{' +

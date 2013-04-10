@@ -9,7 +9,7 @@ function Normalizer() {
 
 }
 
-Normaliser.prototype.unifyTrackNamesForBook = function(cdDirectory, finishCallback) {
+Normalizer.prototype.unifyTrackNamesForBook = function(cdDirectory, finishCallback) {
     fs.readdir(directory, function(error, files) {
     
     });
@@ -18,7 +18,7 @@ Normaliser.prototype.unifyTrackNamesForBook = function(cdDirectory, finishCallba
 // "1. CD 3 The 1st tale of xyz part 1"
 // "10. CD 12 Another tale"
 // unify to "01. CD 03 The 01st tale of xyz part 01" (paranoid all to 1 length)
-Normaliser.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback) {
+Normalizer.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback) {
     fs.readdir(directory, function(error, files) {
         var unhandledFiles = files.length;
         var tracks = {}
