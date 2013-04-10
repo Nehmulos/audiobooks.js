@@ -18,10 +18,10 @@ Normalizer.prototype.unifyTrackNamesForBook = function(cdDirectory, finishCallba
 // "1. CD 3 The 1st tale of xyz part 1"
 // "10. CD 12 Another tale"
 // unify to "01. CD 03 The 01st tale of xyz part 01" (paranoid all to 1 length)
-Normalizer.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback) {
+Normalizer.prototype.unifyTrackNamesForCd = function(directory, finishCallback) {
     fs.readdir(directory, function(error, files) {
         var unhandledFiles = files.length;
-        var tracks = {}
+        var tracks = [];
         
         for(var i=0; i < files.length; ++i) {
             var filename = files[i];
@@ -32,7 +32,7 @@ Normalizer.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback
             
             tracks.push({
                 name: filename,
-                matches: /([0-9]+)/.exec(filename)
+                matches: filename.match(/([0-9]+)/g)
             });
         }
         
@@ -49,9 +49,11 @@ Normalizer.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback
         for (var t=0; t < tracks.length; ++t) {
             var matches = tracks[t].matches;
             
-            for (var i=0; i < matches.length; ++i) {
-                if (matches[i].length > longest) {
-                    longest = matches[i].length;
+            if (matches) {
+                for (var i=0; i < matches.length; ++i) {
+                    if (matches[i].length > longest) {
+                        longest = matches[i].length;
+                    }
                 }
             }
         }
@@ -67,13 +69,14 @@ Normalizer.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback
             
             // rename
             if (tracks[t].name != newName) {
-                var oldPath = path.join(cdDirectory, tracks[t].name);
-                var newPath = path.join(cdDirectory, newName);
+                var oldPath = path.join(directory, tracks[t].name);
+                var newPath = path.join(directory, newName);
                 fs.rename(oldPath, newPath, checkEnd);
             } else {
                 checkEnd();
             }
         }
+        console.log(tracks);
     });
 }
 

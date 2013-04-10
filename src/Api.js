@@ -81,9 +81,10 @@ Api.prototype.handleUri = function(res, uri) {
             //covers
         });
         
-    } else if (uri.pathname == "/api/unifyTrackNamesForCd" && uri.search) {
-        // TODO secure paths
-        normalizer.unifyTrackNamesForCd("pub/books/" + uri.search, function(error) {
+    } else if (uri.pathname == "/api/unifyTrackNamesForCd" && uri.query) {
+        var p = fileServer.resolveUrl(path.join("books", uri.query))
+        console.log(p);
+        normalizer.unifyTrackNamesForCd(p, function(error) {
             res.writeHead(200, {"Content-Type": "application/json"});
             res.end('{"status": "okay"}');
         });
