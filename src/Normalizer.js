@@ -10,7 +10,9 @@ function Normalizer() {
 }
 
 Normaliser.prototype.unifyTrackNamesForBook = function(cdDirectory, finishCallback) {
-
+    fs.readdir(directory, function(error, files) {
+    
+    });
 }
 
 // "1. CD 3 The 1st tale of xyz part 1"
@@ -72,8 +74,7 @@ Normaliser.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback
                 checkEnd();
             }
         }
-        
-    }
+    });
 }
 
 //TODO split into more separate functions
