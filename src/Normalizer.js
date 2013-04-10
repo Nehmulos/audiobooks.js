@@ -64,7 +64,11 @@ Normaliser.prototype.unifyTrackNamesForCd = function(cdDirectory, finishCallback
             });
             
             // rename
-            fs.rename(tracks[t].name, newName, checkEnd);
+            if (tracks[t].name != newName) {
+                fs.rename(tracks[t].name, newName, checkEnd);
+            } else {
+                checkEnd();
+            }
         }
         
     }
