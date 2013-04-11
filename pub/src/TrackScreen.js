@@ -41,9 +41,22 @@ TrackScreen.prototype.buildNodesFromJson = function(data) {
         var cdName = this.name;
         var $cdDiv = $("<div>"+ cdName +"</div>");
         var $cdList = $("<ol/>");
+        var $normalizeCdButton = $("<div class='normalizeCdButton'></div>");
         $("#main").append($cdDiv);
-        $cdDiv.append($cdList);
-            
+        
+        $normalizeCdButton.append("<img src='img/normalizeIcon.png'/>");
+        $normalizeCdButton.append("<span class='status'></span>");
+        $normalizeCdButton.click(function() {
+            var thisButton = this;
+            $(this).find(".status").text("updating...");
+            $.getJSON("api/unifyTrackNamesForCd?" + _this.author + "/" + _this.book + "/" + cdName,
+                function(data) {
+                $(thisButton).find(".status").text(data.status || "no response");
+                app.setScreenFromLocationHash(); // TODO just fetch this cd
+            });
+        });
+        $cdDiv.append($normalizeCdButton);
+        
         $.each(cd.tracks, function(trackIndex) {
             var $trackLi = $("<li/>");
             var $playTrackLink = $("<a class='PlayTrackLink' href='"+window.location.hash+"'>"+this+"</a>");
@@ -57,6 +70,7 @@ TrackScreen.prototype.buildNodesFromJson = function(data) {
             $trackLi.append($playTrackLink);
             $cdList.append($trackLi);
         });
+        $cdDiv.append($cdList);
     });
     
     $(".PlayTrackLink").click(function() {

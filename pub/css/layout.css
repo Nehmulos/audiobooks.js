@@ -176,3 +176,12 @@ body a {
 .nowPlayingText .clickable:hover {
     text-decoration:underline;
 }
+
+.normalizeCdButton {
+    display: inline-block;
+    background-color: #333;
+    cursor:pointer;
+}
+.normalizeCdButton img {
+    height: 16px;
+}
