@@ -98,7 +98,10 @@ Normalizer.prototype.generateCoverThumbnails = function(baseDirectory, onDirecto
                 var bestImage = null;
                 
                 if (potentialCovers.length == 0 && onDirectoryUncertain) {
-                    onDirectoryUncertain({covers:[]});
+                    //TODO test this
+                    var coverUrl = fileServer.resolveUrl("img/missingCover.png");
+                    fs.linkSync(coverUrl, path.join(directory, "cover.png"));
+                    //onDirectoryUncertain({covers:[]});
                 }
                 
                 for (var i=0; i < potentialCovers.length; ++i) {
