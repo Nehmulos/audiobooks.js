@@ -97,6 +97,10 @@ Api.prototype.handleUri = function(res, uri) {
             res.writeHead(200, {"Content-Type": "application/json"});
             res.end('{"status": "okay"}');
         });
+    
+    } else if (uri.pathname == "/api/buildDate") {
+        this.buildDate(res);
+    
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
         res.end('{' +
@@ -275,6 +279,21 @@ Api.prototype.getVolume = function(res) {
         }
         res.writeHead(500, {"Content-Type": "application/json"});
         res.end('{"status": "could not parse volume","error":"parseError"}');
+    });
+}
+
+Api.prototype.buildDate = function(res) {
+    exec("git log -1 --format=\"%cd\"", function (error, stdout, stderr) {
+        if (error) {
+            console.log("could not get git last commit:" + error);
+            console.log(stderr);
+            
+            res.writeHead(500, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({error: ""+error}));
+            return;
+        }
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify({status: ""+stdout}));
     });
 }
 
