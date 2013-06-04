@@ -56,17 +56,21 @@ Player.prototype.togglePause = function(res) {
     if (this.mplayerProcess) {
         this.mplayerProcess.stdin.write("p");
         this.paused = !this.paused;
-        var status = this.paused ? "paused" : "playing";
-        res.writeHead(200, {"Content-Type": "application/json"});
-        res.end('{"status": "'+status+'"}');
+        if (res) {
+            var status = this.paused ? "paused" : "playing";
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end('{"status": "'+status+'"}');
+        }
         return;
     }
     if (this.trackList.length > 0) {
         this.play(res, this.trackList);
         return;
     }
-    res.writeHead(412, {"Content-Type": "application/json"});
-    res.end('{"error": "no track"}');
+    if (res) {
+        res.writeHead(412, {"Content-Type": "application/json"});
+        res.end('{"error": "no track"}');
+    }
 }
 
 Player.prototype.pause = function(res) {
@@ -85,8 +89,10 @@ Player.prototype.unPause = function(res) {
         this.togglePause(res);
         return;
     }
-    res.writeHead(412, {"Content-Type": "application/json"});
-    res.end('{"status": "already playing"}');
+    if (res) {
+        res.writeHead(412, {"Content-Type": "application/json"});
+        res.end('{"status": "already playing"}');
+    }
 }
 
 Player.prototype.stop = function(res) {
