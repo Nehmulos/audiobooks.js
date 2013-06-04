@@ -70,6 +70,15 @@ Api.prototype.handleUri = function(res, uri) {
     } else if (uri.pathname == "/api/getPlayStatus") {
         player.sendPlayStatus(res);
 
+    } else if (uri.pathname == "/api/activateTimeout") {
+        // 2h default delay
+        var delay = parseInt(decodeURIComponent(uri.query)) || 1000 * 60 * 2;
+        console.log(delay);
+        player.activateTimeout(res, delay);
+        
+    } else if (uri.pathname == "/api/removeTimeout") {
+        player.removeTimeout(res);
+
     } else if (uri.pathname == "/api/setVolume" && uri.query) {
         this.setVolume(res, uri.query);
         

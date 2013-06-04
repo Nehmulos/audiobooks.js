@@ -97,6 +97,9 @@ RemotePlayer.prototype.continuePlaying = function() {
         if (data && !data.error) {
             _this.setStatus("playing");
         }
+        $.getJSON("api/activateTimeout", function(timeoutData) {
+            console.log("timeout set", timeoutData);
+        });
     });
 }
 

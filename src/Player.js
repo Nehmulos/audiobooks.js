@@ -11,6 +11,7 @@ function Player() {
     this.playStatus = "none";
     this.mplayerProcess = null;
     this.paused = true;
+    this.autoPauseTimeoutId = null;
 }
 
 Player.prototype.play = function(res, url) {
@@ -73,8 +74,10 @@ Player.prototype.pause = function(res) {
         this.togglePause(res);
         return;
     }
-    res.writeHead(412, {"Content-Type": "application/json"});
-    res.end('{"status": "already paused"}');
+    if (res) {
+        res.writeHead(412, {"Content-Type": "application/json"});
+        res.end('{"status": "already paused"}');
+    }
 }
 
 Player.prototype.unPause = function(res) {
@@ -229,6 +232,39 @@ Player.prototype.sendPlayStatus = function(res) {
 
     res.writeHead(200, {"Content-Type": "application/json"});
     res.end(JSON.stringify(ret));
+}
+
+Player.prototype.activateTimeout = function(res, delay) {
+    var self = this;
+    this.removeTimeout();
+    this.autoPauseTimeoutId = setTimeout(function() {
+        self.pause();
+        console.log("timeout");
+    }, delay);
+    
+    if (res) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify({status: "timeout set", delay: delay}));
+    }
+}
+
+Player.prototype.removeTimeout = function(res) {
+    if (this.autoPauseTimeoutId != null) {
+        clearTimeout(this.autoPauseTimeoutId);
+        this.autoPauseTimeoutId = null;
+        
+        console.log("cancel timeout");
+
+        if (res) {
+            res.writeHead(200, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({status: "removed"}));
+        }
+        return;
+    }
+    if (res) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end(JSON.stringify({status: "no timeout"}));
+    }
 }
 
 // exported instance
