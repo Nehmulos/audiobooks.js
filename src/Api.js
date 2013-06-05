@@ -72,7 +72,7 @@ Api.prototype.handleUri = function(res, uri) {
 
     } else if (uri.pathname == "/api/activateTimeout") {
         // 2h default delay
-        var delay = parseInt(decodeURIComponent(uri.query)) || 1000 * 60 * 2;
+        var delay = parseInt(decodeURIComponent(uri.query)) || 1000*60*60 * 2;
         console.log(delay);
         player.activateTimeout(res, delay);
         
