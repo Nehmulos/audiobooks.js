@@ -36,6 +36,9 @@ TrackScreen.prototype.createNodes = function() {
 TrackScreen.prototype.buildNodesFromJson = function(data) {
     var _this = this;
     this.data = data;
+    data.cds.sort(function(a, b) {
+	return a.name > b.name;
+    });
     $.each(data.cds, function(cdIndex, cd) {
         var cdName = this.name;
         var $cdDiv = $("<div>"+ cdName +"</div>");
