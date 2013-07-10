@@ -14,20 +14,9 @@ AuthorsScreen.prototype.createNodes = function() {
         $.each(data.authors, function()
         {
             var author = this;
-            var $jewelDiv = $("<div class='JewelCase'/>");
-            var $jewelAnchor = $("<a class='authorLink' href='#!/"+ author +"'/>");
-            
-            var jewelCoverImage = document.createElement("img");
-            jewelCoverImage.className = "Cover";
-            jewelCoverImage.onerror = Utils.multiPostfixCoverFunction("books/"+ author +"/cover");
-            jewelCoverImage.src = "books/" + author + "/cover.png";
-            
-            $jewelDiv.append($jewelAnchor);
-            $("#main").append($jewelDiv);
-            
-            $jewelAnchor.append(jewelCoverImage);
-            $jewelAnchor.append("<img class='CoverOverlay' src='img/coverOverlay_old.png'/>");
-            $jewelAnchor.append("<span class='Caption'>"+ author +"</span>");
+            var path = "/" + author + "/";
+            var cover = Cover.createElement(path, author);
+            document.getElementById("main").appendChild(cover);
         });
     };
     

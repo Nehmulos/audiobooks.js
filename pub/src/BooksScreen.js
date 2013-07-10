@@ -21,27 +21,9 @@ BooksScreen.prototype.createNodes = function()
             var book = this;
             var $jewelDiv = $("<div class='JewelCase'/>");
             
-            var pathPrefix = "books/" + _this.author + "/" + book + "/";
-            var jewelCoverImage = document.createElement("img");
-            jewelCoverImage.className = "Cover";
-            jewelCoverImage.onerror = Utils.multiPostfixCoverFunction(pathPrefix + "cover");
-            jewelCoverImage.src = pathPrefix + "cover.png";
-            
-            var $jewelAnchor = $("<a class='bookLink' href='#!/" + pathPrefix + "'>");
-            $jewelDiv.append($jewelAnchor);
-            $("#main").append($jewelDiv);
-            
-            $jewelAnchor.append(jewelCoverImage);
-            $jewelAnchor.append("<img class='CoverOverlay' src='img/coverOverlay_old.png'/>");
-            $jewelAnchor.append("<span class='Caption'>"+this+"</span>");
-            /*
-            $jewelAnchor.click(function()
-            {
-                $(".bookLink").unbind("click");
-                app.setScreen(new TrackScreen(_this.author, $(this).attr("data-book")));
-            });
-            */
-            
+            var path = "/" + _this.author + "/" + book + "/";
+            var cover = Cover.createElement(path, this);
+            document.getElementById("main").appendChild(cover);
         });
     };
     
