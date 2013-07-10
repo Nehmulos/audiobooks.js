@@ -11,13 +11,12 @@ AuthorsScreen.prototype.createNodes = function() {
     
     var buildNodesFromJson = function(data) 
     {
-        $.each(data.authors, function()
-        {
-            var author = this;
+        for (var i=0; i < data.authors.length; ++i) {
+            var author = data.authors[i];
             var path = "/" + author + "/";
             var cover = Cover.createElement(path, author);
             document.getElementById("main").appendChild(cover);
-        });
+        };
     };
     
     if(app.fileCache.authors) {

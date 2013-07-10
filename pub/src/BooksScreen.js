@@ -16,15 +16,12 @@ BooksScreen.prototype.createNodes = function()
     
     var buildNodesFromJson = function(data) 
     {
-        $.each(data.books, function()
-        {
-            var book = this;
-            var $jewelDiv = $("<div class='JewelCase'/>");
-            
+        for (var i=0; i < data.books.length; ++i) {
+            var book = data.books[i];
             var path = "/" + _this.author + "/" + book + "/";
-            var cover = Cover.createElement(path, this);
+            var cover = Cover.createElement(path, book);
             document.getElementById("main").appendChild(cover);
-        });
+        };
     };
     
     if(app.fileCache.author[this.author] && app.fileCache.author[this.author].books)

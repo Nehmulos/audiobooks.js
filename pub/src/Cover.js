@@ -12,7 +12,7 @@ Cover.createElement = function(path, captionText) {
     var coverPath = "books" + path + "cover";
     var jewelCoverImage = document.createElement("img");
     jewelCoverImage.className = "Cover";
-    jewelCoverImage.onerror = Utils.multiPostfixCoverFunction(coverPath);
+    jewelCoverImage.onerror = Cover.multiPostfixCoverFunction(coverPath);
     jewelCoverImage.src = coverPath + ".png";
     jewelAnchor.appendChild(jewelCoverImage);
     
@@ -28,4 +28,21 @@ Cover.createElement = function(path, captionText) {
     
     jewelDiv.appendChild(jewelAnchor);
     return jewelDiv;
+}
+
+// onError function for cover img element. Set this as onerror and src = png
+Cover.multiPostfixCoverFunction = function(prefix, storage) {
+    return function(event) {
+        // try jpg
+        event.target.onerror = function(event) {
+            // try jpeg
+            event.target.onerror = function(event) {
+                // use 404 img
+                event.target.src = "img/missingCover.png";
+                event.target.onerror = null;
+            };
+            event.target.src = prefix + ".jpeg";
+        };
+        event.target.src = prefix + ".jpg";
+    };
 }
