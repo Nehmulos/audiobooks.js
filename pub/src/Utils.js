@@ -44,3 +44,20 @@ Utils.sortObject = function(o) {
     }
     return sorted;
 }
+
+// onError function for cover img element. Set this as onerror and src = png
+Utils.multiPostfixCoverFunction = function(prefix) {
+    return function(event) {
+        // try jpg
+        event.target.onerror = function(event) {
+            // try jpeg
+            event.target.onerror = function(event) {
+                // use 404 img
+                event.target.src = "img/missingCover.png";
+                event.target.onerror = null;
+            };
+            event.target.src = prefix + ".jpeg";
+        };
+        event.target.src = prefix + ".jpg";
+    };
+}

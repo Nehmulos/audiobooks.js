@@ -20,32 +20,18 @@ BooksScreen.prototype.createNodes = function()
         {
             var book = this;
             var $jewelDiv = $("<div class='JewelCase'/>");
-            var $jewelCoverImage = $("<img class='Cover' src='books/"+ book +"/cover.png'>");
-            var $jewelAnchor = $("<a class='bookLink' href='#!/"+ _this.author +"/"+ book +"'/>");
+            
+            var pathPrefix = "books/" + _this.author + "/" + book + "/";
+            var jewelCoverImage = document.createElement("img");
+            jewelCoverImage.className = "Cover";
+            jewelCoverImage.onerror = Utils.multiPostfixCoverFunction(pathPrefix + "cover");
+            jewelCoverImage.src = pathPrefix + "cover.png";
+            
+            var $jewelAnchor = $("<a class='bookLink' href='#!/" + pathPrefix + "'>");
             $jewelDiv.append($jewelAnchor);
             $("#main").append($jewelDiv);
             
-            
-            $jewelCoverImage.error(function()
-            {
-                // try jpg
-                $(this).unbind("error");
-                this.src = "books/"+ _this.author +"/"+ book +"/cover.jpg";
-                $(this).error(function()
-                {
-                    // try jpeg
-                    $(this).unbind("error");
-                    this.src = "books/"+ _this.author +"/"+ book +"/cover.jpeg";
-                    $(this).error(function()
-                    {
-                        // use 404 img
-                        $(this).unbind("error");
-                        this.src = "img/missingCover.png";
-                    });
-                });
-            });
-            
-            $jewelAnchor.append($jewelCoverImage);
+            $jewelAnchor.append(jewelCoverImage);
             $jewelAnchor.append("<img class='CoverOverlay' src='img/coverOverlay_old.png'/>");
             $jewelAnchor.append("<span class='Caption'>"+this+"</span>");
             /*

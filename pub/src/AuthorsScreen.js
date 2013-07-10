@@ -13,49 +13,21 @@ AuthorsScreen.prototype.createNodes = function() {
     {
         $.each(data.authors, function()
         {
-            var author = this;	
+            var author = this;
             var $jewelDiv = $("<div class='JewelCase'/>");
             var $jewelAnchor = $("<a class='authorLink' href='#!/"+ author +"'/>");
-            var $jewelCoverImage = $("<img class='Cover' src='books/"+ author +"/cover.png'>");
+            
+            var jewelCoverImage = document.createElement("img");
+            jewelCoverImage.className = "Cover";
+            jewelCoverImage.onerror = Utils.multiPostfixCoverFunction("books/"+ author +"/cover");
+            jewelCoverImage.src = "books/" + author + "/cover.png";
+            
             $jewelDiv.append($jewelAnchor);
             $("#main").append($jewelDiv);
-
-            $jewelCoverImage.error(function()
-            {
-                // try jpg
-                $(this).unbind("error");
-                this.src = "books/"+ author +"/cover.jpg";
-                $(this).error(function()
-                {
-                    // try jpeg
-                    $(this).unbind("error");
-                    this.src = "books/"+ author +"/cover.jpeg";
-                    $(this).error(function()
-                    {
-                        // use 404 img
-                        $(this).unbind("error");
-                        this.src = "img/missingCover.png";
-                    });
-                });
-            });
             
-            $jewelAnchor.append($jewelCoverImage);
+            $jewelAnchor.append(jewelCoverImage);
             $jewelAnchor.append("<img class='CoverOverlay' src='img/coverOverlay_old.png'/>");
             $jewelAnchor.append("<span class='Caption'>"+ author +"</span>");
-            /*
-            $jewelAnchor.click(function()
-            {
-                $(".authorLink").unbind("click");
-                app.setScreen(new BooksScreen($(this).attr("data-author")));
-            });
-            */            
-            //TODO check if cover exists, if not load cover404.png from app/img
-            
-            //crazy TODO cache images in js
-            //            if(app.fileCache.authorCovers[this.name])
-            //            {
-            //                app.fileCache.authorCovers[this.name]
-            //            }
         });
     };
     
