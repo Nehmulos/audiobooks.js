@@ -23,7 +23,7 @@ Cover.createElement = function(path, captionText) {
     
     var caption = document.createElement("span");
     caption.className="Caption";
-    caption.innerText = captionText;
+    caption.textContent = captionText;
     jewelAnchor.appendChild(caption);
     
     jewelDiv.appendChild(jewelAnchor);
