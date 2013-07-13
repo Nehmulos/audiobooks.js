@@ -169,7 +169,6 @@ Player.prototype.onMplayerOutput = function(line) {
     } else if (this.playStatus == "ended") {
         console.log("eof message: "  + line)
         if (/Exiting\.\.\. \(End of file\)/.test(line)) {
-            this.mplayerProcess = null;
             this.stop(null);
             console.log("exit mplayer");
             if (this.trackList.length > 0) {
