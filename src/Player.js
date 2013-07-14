@@ -140,7 +140,7 @@ Player.prototype.playWithMplayer = function(url) {
 }
 
 Player.prototype.playNextOnTrackList = function() {
-    console.log("playlist = ",this.trackList);
+    //console.log("playlist = ",this.trackList);
     if (this.trackList.length == 0) {
         return;
     }
@@ -163,7 +163,7 @@ Player.prototype.playNextOnTrackList = function() {
 }
 
 Player.prototype.onMplayerOutput = function(line) {
-    console.log("LINE" + line);
+    //console.log("LINE" + line);
     if (this.playStatus == "init") {
         if (/Starting playback\.\.\.\s$/.test(line)) {
             this.playStatus = "playing";
