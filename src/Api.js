@@ -240,9 +240,9 @@ Api.prototype.setVolume = function(res, volume) {
     }
 
     exec("amixer set Master " + volume + "%", function (error, stdout, stderr) {
-        console.log("stdout " + stdout);
-        console.log("stderr " + stderr);
         if (error) {
+            console.log("stdout " + stdout);
+            console.log("stderr " + stderr);
             console.log("could not set volume: " + error);
             
             var errorObject = {error: ""+error};
@@ -266,9 +266,9 @@ Api.prototype.getVolume = function(res) {
     }
 
     exec("amixer get Master", function (error, stdout, stderr) {
-        console.log("stdout " + stdout);
-        console.log("stderr " + stderr);
         if (error) {
+            console.log("stdout " + stdout);
+            console.log("stderr " + stderr);
             console.log("could not get volume: " + error);
             
             var errorObject = {error: ""+error};
