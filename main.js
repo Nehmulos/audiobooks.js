@@ -9,7 +9,7 @@ var port = 8081;
 http.createServer(function(req, res) {
     var uri = url.parse(req.url);
     if (api.isApiUrl(uri.pathname)) {
-        api.handleUri(res, uri);
+        api.handleUri(res, req, uri);
     } else if(uri.pathname == "/") {
         fileSever.sendFile(res, "index.html");
     } else {

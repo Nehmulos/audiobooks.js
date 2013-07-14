@@ -76,7 +76,6 @@ RemotePlayer.prototype.stop = function(callback) {
 RemotePlayer.prototype.setTrackList = function(url, callback) {
     Player.prototype.setTrackList.call(this, url);
     var args = {trackList: url};
-    console.log(JSON.stringify(args));
     
     var gotJson = function(data) {
         console.log(data);
@@ -85,8 +84,11 @@ RemotePlayer.prototype.setTrackList = function(url, callback) {
         }
     };
     
-    $.getJSON("api/setTrackList?" + JSON.stringify(args), gotJson)
-        .error(gotJson);
+    $.ajax({
+        url: "api/setTrackList",
+        type:"PUT",
+        data:JSON.stringify(args)
+    }).done(gotJson);
 }
 
 RemotePlayer.prototype.continuePlaying = function() {

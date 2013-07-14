@@ -15,7 +15,7 @@ Api.prototype.isApiUrl = function(url) {
 }
 
 // ugly
-Api.prototype.handleUri = function(res, uri) {
+Api.prototype.handleUri = function(res, req, uri) {
     
     if(uri.pathname == "/api/authors.json" || uri.pathname == "/api/artists.json") {
         this.sendArtistList(res, uri.pathname);
@@ -48,9 +48,17 @@ Api.prototype.handleUri = function(res, uri) {
             player.play(res, args.trackList);
         }
         
-    } else if (uri.pathname == "/api/setTrackList" && uri.query) {
-        var args = JSON.parse(decodeURIComponent(uri.query));
-        player.setTrackList(res, args.trackList);
+    } else if (uri.pathname == "/api/setTrackList") {
+        var body = ""; // WARNING only allows 1 client
+        req.on('data', function (data) {
+            body += data;
+        });
+        req.on('end', function () {
+            console.log(body);
+            var args = JSON.parse(body);
+            player.setTrackList(res, args.trackList);
+        });
+
         
     } else if (uri.pathname == "/api/togglePause") {
         player.togglePause(res);

@@ -95,33 +95,36 @@ Player.prototype.unPause = function(res) {
     }
 }
 
+// stop list and process
 Player.prototype.stop = function(res) {
     this.paused = true;
-    this.track = null;
     this.trackList = [];
-    this.progress = null;
-    this.playStatus = "none";
-    
-    if (this.mplayerProcess) {
-        this.mplayerProcess.kill();
-        this.mplayerProcess = null;
-        if (res) {
-            res.writeHead(200, {"Content-Type": "application/json"});
-            res.end('{"status": "stopped"}');
-        }
-        return;
+    if (this.stopProcess() && res) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        res.end('{"status": "stopped"}');
     }
+    
     if (res) {
         res.writeHead(412, {"Content-Type": "application/json"});
         res.end('{"status": "no track"}');
     }
 }
 
-Player.prototype.playWithMplayer = function(url) {
+// just stop the process for the active track
+Player.prototype.stopProcess = function() {
+    this.track = null;
+    this.progress = null;
+    this.playStatus = "none";
+    
     if (this.mplayerProcess) {
-        this.stop(null);
+        this.mplayerProcess.kill();
+        this.mplayerProcess = null;
+        return true;
     }
+    return false;
+}
 
+Player.prototype.playWithMplayer = function(url) {
     var _this = this;
     console.log("mplayer play: "+url);
     
@@ -129,28 +132,38 @@ Player.prototype.playWithMplayer = function(url) {
         if (url.length <= 0) {
             return;
         }
-        this.track = url[0];
         this.trackList = url;
-        this.mplayerProcess = spawn("mplayer", url); // escapes spaces, too.
-        url.splice(0, 1);
-    
     } else if (typeof url === "string") {
-        this.track = url;
-        this.mplayerProcess = spawn("mplayer", [url]); // escapes spaces, too.
+        this.trackList = [url];
     }
+    this.playNextOnTrackList();
+}
+
+Player.prototype.playNextOnTrackList = function() {
+    console.log("playlist = ",this.trackList);
+    if (this.trackList.length == 0) {
+        return;
+    }
+    this.stopProcess();
     
+    var url = this.trackList.splice(0,1);
+    this.track = url[0];
+    
+    this.playStatus = "init";
+    this.paused = false;
+    this.mplayerProcess = spawn("mplayer", url); // escapes spaces, too.
+    
+    var _this = this;
     this.mplayerProcess.stdout.on("data", function(data) {
         _this.onMplayerOutput(data);
     });
     this.mplayerProcess.stderr.on("data", function(data) {
         console.log("ERROR: " +data);
     });
-    this.playStatus = "init";
-    this.paused = false;
 }
 
 Player.prototype.onMplayerOutput = function(line) {
-    //console.log("LINE" + line);
+    console.log("LINE" + line);
     if (this.playStatus == "init") {
         if (/Starting playback\.\.\.\s$/.test(line)) {
             this.playStatus = "playing";
@@ -169,12 +182,8 @@ Player.prototype.onMplayerOutput = function(line) {
     } else if (this.playStatus == "ended") {
         console.log("eof message: "  + line)
         if (/Exiting\.\.\. \(End of file\)/.test(line)) {
-            this.stop(null);
             console.log("exit mplayer");
-            if (this.trackList.length > 0) {
-                this.play(null, this.trackList[0]);
-                console.log("next track" + this.trackList[0]);
-            }
+            this.playNextOnTrackList();
             
         } else if (/Playing /.test(line)) {
             this.playStatus = "init";
