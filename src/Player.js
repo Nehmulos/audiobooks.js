@@ -160,6 +160,9 @@ Player.prototype.playNextOnTrackList = function() {
     this.mplayerProcess.stderr.on("data", function(data) {
         console.log("ERROR: " +data);
     });
+    this.mplayerProcess.on("close", function(code, signal) {
+        _this.mplayerProcess = null;
+    });
 }
 
 Player.prototype.onMplayerOutput = function(line) {
