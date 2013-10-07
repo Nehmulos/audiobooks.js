@@ -73,6 +73,15 @@ TrackScreen.prototype.buildNodesFromJson = function(data) {
             $cdList.append($trackLi);
         });
         $cdDiv.append($cdList);
+        
+        // jump to now playing track
+        var nowPlaying = app.player.nowPlaying();
+        var nowTrack = nowPlaying.trackName + nowPlaying.extension;
+        var offset = $cdList.find("[data-track=\"" + nowTrack + "\"]").offset()
+        console.log($cdList.find("[data-track=\"" + nowTrack + "\"]"));
+        if (offset) {
+            window.scrollTo(0, Math.max(0, offset.top - 32));
+        }
     });
     
     $(".PlayTrackLink").click(function() {
@@ -96,6 +105,7 @@ TrackScreen.prototype.buildNodesFromJson = function(data) {
         
         app.player.playList(tracks);
     });
+    
 }
 
 TrackScreen.prototype.removeNodes = function() {

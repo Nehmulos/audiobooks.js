@@ -26,6 +26,31 @@ Player.prototype.transfereFromPlayer = function(player) {
     }
 }
 
+Player.prototype.nowPlaying = function() {
+    var albumName;
+    var artistName;
+    var trackName;
+    var extension;
+    
+    var parts = this.track.split("/");
+    if (parts.length >= 4) {
+        albumName = parts[parts.length-3];
+        artistName = parts[parts.length-4];
+        
+        if (/([^\/]+)\..*$/.test(parts[parts.length-1])) {
+            var nameMatches = /([^\/]+)(\..*)$/.exec(parts[parts.length-1]);
+            trackName = nameMatches[1];
+            extension = nameMatches[2];
+        }
+    }
+    return {
+        artistName: artistName,
+        albumName: albumName,
+        trackName: trackName,
+        extension: extension
+    }
+}
+
 Player.prototype.setTrack = function(url) {
     var trackName = url;
     var artistName = "nobody";
@@ -36,26 +61,24 @@ Player.prototype.setTrack = function(url) {
     $(".nowPlayingText .artist").unbind("click");
     
     this.track = url;
+    var nowPlaying = this.nowPlaying();
     if (url) {
-        var parts = url.split("/");
-        if (parts.length >= 4) {
-            var albumName = parts[parts.length-3];
-            artistName = parts[parts.length-4];
-            
-            if (/([^\/]+)\..*$/.test(parts[parts.length-1])) {
-                trackName = /([^\/]+)\..*$/.exec(parts[parts.length-1])[1];
-            }
-            
+        if (nowPlaying.artistName && nowPlaying.albumName) {
             $(".nowPlayingText .track").addClass("clickable");
             $(".nowPlayingText .track").click(function() {
-                window.location.hash = "#!/" + artistName + "/" + albumName;
-            });
-            
-            $(".nowPlayingText .artist").addClass("clickable");
-            $(".nowPlayingText .artist").click(function() {
-                window.location.hash = "#!/" + artistName;
+                window.location.hash = "#!/" +
+                    nowPlaying.artistName + "/" +
+                    nowPlaying.albumName;
             });
         }
+        
+        if (nowPlaying.artistName) {
+            $(".nowPlayingText .artist").addClass("clickable");
+            $(".nowPlayingText .artist").click(function() {
+                window.location.hash = "#!/" + nowPlaying.artistName;
+            });
+        }
+        
         
         $(".playerGui .pauseButton").removeClass("disabled");
         $(".playerGui .playButton").removeClass("disabled");
@@ -66,8 +89,8 @@ Player.prototype.setTrack = function(url) {
         $(".playerGui .pauseButton").addClass("disabled");
         $(".playerGui .playButton").addClass("disabled");
     }
-    $(".nowPlayingText .track").text(trackName);
-    $(".nowPlayingText .artist").text(artistName);
+    $(".nowPlayingText .track").text(nowPlaying.trackName);
+    $(".nowPlayingText .artist").text(nowPlaying.artistName);
 }
 
 Player.prototype.setStatus = function(status) {
