@@ -32,7 +32,7 @@ Player.prototype.nowPlaying = function() {
     var trackName;
     var extension;
     
-    var parts = this.track.split("/");
+    var parts = this.track ? this.track.split("/") : [];
     if (parts.length >= 4) {
         albumName = parts[parts.length-3];
         artistName = parts[parts.length-4];
