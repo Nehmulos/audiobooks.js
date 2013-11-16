@@ -60,7 +60,9 @@ Normalizer.prototype.unifyTrackNamesForCd = function(directory, finishCallback) 
 
         // put 0 infront of matches that are shorter than the longest number
         for (var t=0; t < tracks.length; ++t) {
-            var newName = tracks[t].name.replace(/([0-9]+)/g, function(original, j) {
+	    var extension = path.extname(tracks[t].name);
+	    var baseName = path.basename(tracks[t].name, extension);
+            var newName = baseName.replace(/([0-9]+)/g, function(original, j) {
                 var str = new Array(longest+1).join('0').split('');
                 str.splice(str.length-1-original.length-1, original.length);
                 str = str.concat(original.split(''));
@@ -69,14 +71,15 @@ Normalizer.prototype.unifyTrackNamesForCd = function(directory, finishCallback) 
             
             // rename
             if (tracks[t].name != newName) {
+		
                 var oldPath = path.join(directory, tracks[t].name);
-                var newPath = path.join(directory, newName);
-                fs.rename(oldPath, newPath, checkEnd);
+                var newPath = path.join(directory, newName + extension);
+                console.log(tracks[t].name, " to ", newName + extension);
+                //fs.rename(oldPath, newPath, checkEnd);
             } else {
                 checkEnd();
             }
         }
-        console.log(tracks);
     });
 }
 
