@@ -1,9 +1,9 @@
+-use mplayer in slave mode
+     -fastforward, backtrack, jump to position
 -normalize: convert mp3/wav/aac/flac to ogg
 -cache: store artists, books, tracknames, coverpaths, maybe even coverdata
--fix node.js audiostreaming
+-fix http audiostreaming
 -get a 404 page which doesn't suck
 -retain existing cover images, do not overwrite
 -fetch missing cover images from some site
--get proper title and other info about the currently playing track
--fastforward, backtrack
--jump to position
+
