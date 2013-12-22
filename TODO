@@ -1,9 +1,9 @@
+-fix volume control: get device name from amixer instead of using a hardcoded
 -use mplayer in slave mode
      -fastforward, backtrack, jump to position
--normalize: convert mp3/wav/aac/flac to ogg
--cache: store artists, books, tracknames, coverpaths, maybe even coverdata
+-normalize: convert mp3/wav/aac/ogg to flac
 -fix http audiostreaming
 -get a 404 page which doesn't suck
--retain existing cover images, do not overwrite
+-retain existing cover images on conversion, do not overwrite
 -fetch missing cover images from some site
 

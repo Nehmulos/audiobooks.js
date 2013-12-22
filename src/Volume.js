@@ -13,7 +13,7 @@ Volume.prototype.set = function(res, volume) {
         return;
     }
 
-    exec("amixer set Master " + volume + "%", function (error, stdout, stderr) {
+    exec("amixer set PCM " + volume + "%", function (error, stdout, stderr) {
         if (error) {
             console.log("stdout " + stdout);
             console.log("stderr " + stderr);
@@ -32,7 +32,7 @@ Volume.prototype.set = function(res, volume) {
 }
 
 Volume.prototype.get = function(res) {
-    exec("amixer get Master", function (error, stdout, stderr) {
+    exec("amixer get PCM", function (error, stdout, stderr) {
         if (error) {
             console.log("stdout " + stdout);
             console.log("stderr " + stderr);
