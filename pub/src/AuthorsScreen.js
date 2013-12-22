@@ -14,7 +14,7 @@ AuthorsScreen.prototype.createNodes = function() {
         for (var i=0; i < data.authors.length; ++i) {
             var author = data.authors[i];
             var path = "/" + author + "/";
-            var cover = Cover.createElement(path, author);
+            var cover = Cover.createElement(path, author, data.covers);
             document.getElementById("main").appendChild(cover);
         };
     };

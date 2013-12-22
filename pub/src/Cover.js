@@ -2,7 +2,7 @@ function Cover() {
     
 }
 
-Cover.createElement = function(path, captionText) {
+Cover.createElement = function(path, captionText, coversArray) {
     var jewelDiv = document.createElement("div");
     jewelDiv.className = "JewelCase";
     
@@ -10,10 +10,14 @@ Cover.createElement = function(path, captionText) {
     jewelAnchor.href= "#!" + path;
 
     var coverPath = "books" + path + "cover";
+    if (coversArray) { 
+        coverPath = Cover.pathFromArray(path, coversArray)
+    }
+    
     var jewelCoverImage = document.createElement("img");
     jewelCoverImage.className = "Cover";
     jewelCoverImage.onerror = Cover.multiPostfixCoverFunction(coverPath);
-    jewelCoverImage.src = coverPath + ".png";
+    jewelCoverImage.src = coversArray ? coverPath : coverPath + ".png";
     jewelAnchor.appendChild(jewelCoverImage);
     
     var overlay = document.createElement("img");
@@ -28,6 +32,19 @@ Cover.createElement = function(path, captionText) {
     
     jewelDiv.appendChild(jewelAnchor);
     return jewelDiv;
+}
+
+Cover.pathFromArray = function(dir, coversArray) {
+    if (dir && dir[0] == "/") {
+        dir = dir.substr(1);
+    }
+    
+    for (var i=0; i < coversArray.length; ++i) {
+        if (coversArray[i].indexOf(dir) == 0) {
+            return "books/" + coversArray[i];
+        }
+    }
+    return "img/missingCover.png";
 }
 
 // onError function for cover img element. Set this as onerror and src = png

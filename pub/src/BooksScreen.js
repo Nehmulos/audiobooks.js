@@ -19,7 +19,7 @@ BooksScreen.prototype.createNodes = function()
         for (var i=0; i < data.books.length; ++i) {
             var book = data.books[i];
             var path = "/" + _this.author + "/" + book + "/";
-            var cover = Cover.createElement(path, book);
+            var cover = Cover.createElement(path, book, data.covers);
             document.getElementById("main").appendChild(cover);
         };
     };

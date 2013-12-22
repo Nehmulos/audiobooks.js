@@ -122,9 +122,11 @@ Api.prototype.handleUri = function(res, req, uri) {
 }
 
 Api.prototype.sendArtistList = function(res, artist) {
-    this.getDirectoryList(fileServer.resolveUrl("books/"), function(error, array) {
-        var jsonObject = {};
-        jsonObject.authors = array;
+    this.getDirectoryList(fileServer.resolveUrl("books/"), true, function(error, listing) {
+        var jsonObject = {
+            authors: listing.directories,
+            covers: listing.covers
+        };
         res.writeHead(200, {"Content-Type": "application/json"});
         res.write(JSON.stringify(jsonObject), "utf8");
         res.end();
@@ -132,16 +134,39 @@ Api.prototype.sendArtistList = function(res, artist) {
 }
 
 Api.prototype.sendBookList = function(res, artist) {
-    this.getDirectoryList(fileServer.resolveUrl("books/" + artist + "/"), function(error, array) {
-        var jsonObject = {};
-        jsonObject.books = array;
+    this.getDirectoryList(fileServer.resolveUrl("books/" + artist + "/"), true, function(error, listing) {
+        var jsonObject = {
+            books: listing.directories,
+            covers: listing.covers
+        };
         res.writeHead(200, {"Content-Type": "application/json"});
         res.write(JSON.stringify(jsonObject), "utf8");
         res.end();
     });
 }
 
-Api.prototype.getDirectoryList = function(directory, callback) {
+function findCover(directory, callback) {
+    var extensions = [".png", ".jpg", ".jpeg"];
+    function next(i) {
+        var file = path.join(directory, "cover" + extensions[i]);
+        fs.exists(file, function(exists) {
+            if (exists) {
+                callback(false, file);
+            } else {
+                ++i;
+                if (i < extensions.length) {
+                    next(i+1);
+                } else {
+                    callback(true, "img/coverOverlay_old.png");
+                }
+            }
+        });
+    }
+    next(0);
+}
+
+
+Api.prototype.getDirectoryList = function(directory, covers, callback) {
     fs.readdir(directory, function(error, files) {
         if(error) {
             console.log("error reading dir:"+ directory);
@@ -149,38 +174,58 @@ Api.prototype.getDirectoryList = function(directory, callback) {
             return;
         }
         var directories = [];
-        var unProcessedDirs = files.length;
-        for(var i=0; i < files.length; ++i) {
-            // motherfuncting new scope
-            fs.stat(path.join(directory, files[i]), (function(filename) {
-                return function(error, stats) {
-                    if(error) {
-                        console.log("can not read file " + filename);
+        var covers = [];
+        var unprocessed = files.length * (covers ? 2 : 1);
+        
+        function processed() {
+            unprocessed--;
+            if(unprocessed <= 0) {
+                callback(false, {
+                    directories: directories,
+                    covers: covers
+                });
+            }
+        }
+        
+        for (var i=0; i < files.length; ++i) {
+            (function() {
+                var filename = files[i];
+                var absolute = path.join(directory, files[i]);
+                fs.stat(absolute, function(error, stats) {
+                    if (error) {
+                        console.log("can not read file " + absolute);
                         callback(error, []);
                         return;
                     }
                     
-                    if(stats.isDirectory()) {
+                    if (stats.isDirectory()) {
                         directories.push(filename);
+                        if (covers) {
+                            findCover(absolute, function(error, cover) {
+                                var base = path.basename(cover);
+                                if (error) {
+                                    covers.push(path.join("img", base));   
+                                } else {
+                                    covers.push(path.join(filename, base));
+                                }
+                                processed();
+                            });
+                        }
                     }
-
-                    unProcessedDirs--;
-                    
-                    if(unProcessedDirs <= 0) {
-                        callback(false, directories);
-                    }
-                }
-            })(files[i]));
+                    processed();
+                });
+            })();
         }
     });
 }
 
 Api.prototype.sendTrackList = function(res, artist, book) {
-    var _this = this,
-        url = fileServer.resolveUrl("books/" + artist + "/" + book);
-    this.getDirectoryList(url, function(error, cds) {
-        var jsonObject = {cds:[]},
-            unprocessedCds = cds.length;        
+    var _this = this;
+    var url = fileServer.resolveUrl("books/" + artist + "/" + book);
+    this.getDirectoryList(url, false, function(error, listing) {
+        var jsonObject = {cds:[]};
+        var cds = listing.directories;
+        var unprocessedCds = cds.directories.length;        
         var onReceivedCdTracks = function(error, cd, tracks) {
             jsonObject.cds.push({name:cd, tracks:tracks});
 
