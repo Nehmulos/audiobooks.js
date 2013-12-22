@@ -39,7 +39,7 @@ Cover.pathFromArray = function(dir, coversArray) {
         dir = dir.substr(1);
     }
     var match = dir.match(/\/(.+\/)/);
-    dir = match ? match[1];
+    dir = match ? match[1] : dir;
     
     for (var i=0; i < coversArray.length; ++i) {
         if (coversArray[i].indexOf(dir) == 0) {
