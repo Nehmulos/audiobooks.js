@@ -38,7 +38,7 @@ Cover.pathFromArray = function(dir, coversArray) {
     if (dir && dir[0] == "/") {
         dir = dir.substr(1);
     }
-    var match = dir.match(/(.+)\/(.+\/)/);
+    var match = dir.match(/(.+\/)(.+\/)/);
     dir = match ? match[2] : dir;
     var prefix = match ? match[1] : "";
     
