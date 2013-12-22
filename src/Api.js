@@ -155,7 +155,7 @@ function findCover(directory, callback) {
             } else {
                 ++i;
                 if (i < extensions.length) {
-                    next(i+1);
+                    next(i);
                 } else {
                     callback(true, "img/coverOverlay_old.png");
                 }
