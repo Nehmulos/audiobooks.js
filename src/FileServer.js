@@ -53,13 +53,13 @@ FileServer.prototype.sendFile = function(res, url) {
                 _this.sendErrorCode(res, 500, !_this.isHtmlUrl(url));
                 return;
             }
-            //var expireDate = new Date(stat.mtime);
-            //expireDate.setDate(expireDate.getDate() + 7);
+            var expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 7);
             res.writeHead(200, {
                 "Content-Type": mime.lookup(url),
                 "Last-Modified": stat.mtime.toUTCString(),
-                //"Expires": expireDate.toUTCString(),
-                //"max-age": 60 * 60 * 24 * 30 // 1 week
+                "Expires": expireDate.toUTCString(),
+                "max-age": 60 * 60 * 24 * 30 // 1 week
             });
             res.write(file, "binary");
             res.end();
