@@ -42,8 +42,8 @@ FileServer.prototype.sendFile = function(res, url) {
     var _this = this;
     url = this.resolveUrl(url);
     
-    fs.exists(url, function(exists) {
-        if(!exists) {
+    fs.stat(url, function(error, stat) {
+        if(error) {
             _this.sendErrorCode(res, 404, !_this.isHtmlUrl(url));
             return;
         }
@@ -53,8 +53,12 @@ FileServer.prototype.sendFile = function(res, url) {
                 _this.sendErrorCode(res, 500, !_this.isHtmlUrl(url));
                 return;
             }
-
-            res.writeHead(200, {"Content-Type": mime.lookup(url)});
+            //console.log(stat);
+            res.writeHead(200, {
+                "Content-Type": mime.lookup(url),
+                "Last-Modified": stat.mtime,
+                //"max-age": 60 * 60 * 24 * 30 // 1 week
+            });
             res.write(file, "binary");
             res.end();
         });
