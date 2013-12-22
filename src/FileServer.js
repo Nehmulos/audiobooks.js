@@ -38,7 +38,7 @@ FileServer.prototype.isImage = function(filename) {
 }
 
 /// Sends the file or an error message if the file is not accessable 
-FileServer.prototype.sendFile = function(res, url) {
+FileServer.prototype.sendFile = function(req, res, url) {
     var _this = this;
     url = this.resolveUrl(url);
     
@@ -48,18 +48,23 @@ FileServer.prototype.sendFile = function(res, url) {
             return;
         }
         
+        // mod-date based caching
+        var ifModDate = new Date(req.headers["if-modified-since"]);
+        if (!isNaN(ifModDate.getTime) && ifModDate > stat.mtime) {
+             res.writeHead(304, {
+                "Last-Modified": stat.mtime.toUTCString()
+            });
+            res.end();
+        }
+        
         fs.readFile(url, "binary", function(error, file) {
             if(error) {
                 _this.sendErrorCode(res, 500, !_this.isHtmlUrl(url));
                 return;
             }
-            var expireDate = new Date();
-            expireDate.setDate(expireDate.getDate() + 7);
             res.writeHead(200, {
                 "Content-Type": mime.lookup(url),
-                "Last-Modified": stat.mtime.toUTCString(),
-                "Expires": expireDate.toUTCString(),
-                "max-age": 60 * 60 * 24 * 30 // 1 week
+                "Last-Modified": stat.mtime.toUTCString()
             });
             res.write(file, "binary");
             res.end();

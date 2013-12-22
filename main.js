@@ -11,9 +11,9 @@ http.createServer(function(req, res) {
     if (api.isApiUrl(uri.pathname)) {
         api.handleUri(res, req, uri);
     } else if(uri.pathname == "/") {
-        fileSever.sendFile(res, "index.html");
+        fileSever.sendFile(req, res, "index.html");
     } else {
-        fileSever.sendFile(res, uri.pathname);
+        fileSever.sendFile(req, res, uri.pathname);
     }
 }).listen(port);
 
