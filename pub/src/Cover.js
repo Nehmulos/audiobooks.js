@@ -38,12 +38,13 @@ Cover.pathFromArray = function(dir, coversArray) {
     if (dir && dir[0] == "/") {
         dir = dir.substr(1);
     }
-    var match = dir.match(/\/(.+\/)/);
-    dir = match ? match[1] : dir;
+    var match = dir.match(/(.+)\/(.+\/)/);
+    dir = match ? match[2] : dir;
+    var prefix = match ? match[1] : "";
     
     for (var i=0; i < coversArray.length; ++i) {
         if (coversArray[i].indexOf(dir) == 0) {
-            return "books/" + coversArray[i];
+            return "books/" + prefix + coversArray[i];
         }
     }
     return "img/missingCover.png";
