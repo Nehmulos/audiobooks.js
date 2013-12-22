@@ -175,7 +175,7 @@ Api.prototype.getDirectoryList = function(directory, covers, callback) {
         }
         var directories = [];
         var covers = [];
-        var unprocessed = files.length * (covers ? 2 : 1);
+        var unprocessed = files.length;
         
         function processed() {
             unprocessed--;
@@ -201,6 +201,7 @@ Api.prototype.getDirectoryList = function(directory, covers, callback) {
                     if (stats.isDirectory()) {
                         directories.push(filename);
                         if (covers) {
+                            ++unprocessed;
                             findCover(absolute, function(error, cover) {
                                 var base = path.basename(cover);
                                 if (error) {
