@@ -50,7 +50,7 @@ FileServer.prototype.sendFile = function(req, res, url) {
         
         // mod-date based caching
         var ifModDate = new Date(req.headers["if-modified-since"]);
-        if (!isNaN(ifModDate.getTime) && ifModDate > stat.mtime) {
+        if (!isNaN(ifModDate.getTime()) && ifModDate >= stat.mtime) {
              res.writeHead(304, {
                 "Last-Modified": stat.mtime.toUTCString()
             });
