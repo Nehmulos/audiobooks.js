@@ -226,7 +226,7 @@ Api.prototype.sendTrackList = function(res, artist, book) {
     this.getDirectoryList(url, false, function(error, listing) {
         var jsonObject = {cds:[]};
         var cds = listing.directories;
-        var unprocessedCds = cds.directories.length;        
+        var unprocessedCds = cds.length;        
         var onReceivedCdTracks = function(error, cd, tracks) {
             jsonObject.cds.push({name:cd, tracks:tracks});
 
