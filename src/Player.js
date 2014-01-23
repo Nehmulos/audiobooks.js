@@ -160,8 +160,11 @@ Player.prototype.playNextOnTrackList = function() {
     this.mplayerProcess.stderr.on("data", function(data) {
         console.log("ERROR: " +data);
     });
+    var process = this.mplayerProcess;
     this.mplayerProcess.on("close", function(code, signal) {
-        _this.mplayerProcess = null;
+        if (process == _this.mplayerProcess) {
+            _this.mplayerProcess = null;
+        }
     });
 }
 
@@ -186,6 +189,10 @@ Player.prototype.onMplayerOutput = function(line) {
         console.log("eof message: "  + line)
         if (/Exiting\.\.\. \(End of file\)/.test(line)) {
             console.log("exit mplayer");
+            // just kill the process on os level, since that's faster than
+            // proper unregistration from pulse-audio-server and enables fluid
+            // playback with no break between tracks
+            // TODO check if this is true. I just assume it from expirience.
             this.playNextOnTrackList();
             
         } else if (/Playing /.test(line)) {
