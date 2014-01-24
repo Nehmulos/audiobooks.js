@@ -9,8 +9,7 @@ AuthorsScreen.prototype.createNodes = function() {
     
     app.toolbar.setAuthor(null);
     
-    var buildNodesFromJson = function(data) 
-    {
+    var buildNodesFromJson = function(data) {
         for (var i=0; i < data.authors.length; ++i) {
             var author = data.authors[i];
             var path = "/" + author + "/";
@@ -19,16 +18,11 @@ AuthorsScreen.prototype.createNodes = function() {
         };
     };
     
-    if(app.fileCache.authors) {
-        buildNodesFromJson(app.fileCache.authors);
-    } else {
-        $.getJSON("api/authors.json", function(data) {
-            console.log(data);
-            data.authors.sort();
-            app.fileCache.authors = data;
-            buildNodesFromJson(data);
-        });
-    }
+    $.getJSON("api/authors.json", function(data) {
+        console.log(data);
+        data.authors.sort();
+        buildNodesFromJson(data);
+    });
 }
 
 AuthorsScreen.prototype.removeNodes = function() {

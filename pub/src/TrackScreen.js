@@ -9,28 +9,23 @@ TrackScreen.prototype.createNodes = function() {
     app.toolbar.setAuthor(this.author);
     app.toolbar.setBook(this.book);
     
-    if(false) {
-        //TODO load from cache
-    } else {
-        $.getJSON("api/book.json?author=" + _this.author +"&book="+ _this.book, function(data) {
-            //data.cds = Utils.sortObject(data.cds);
-            
-            data.cds.sort(function(a,b) {
-                return a.name > b.name;
-            });
-            
-            $.each(data.cds, function() {
-                this.tracks.sort();
-            });
-            
-            if(!app.fileCache.author[_this.author]) {
-                app.fileCache.author[_this.author] = new Object();
-            }
-            app.fileCache.author[_this.author].book = new Object();
-            app.fileCache.author[_this.author].book[_this.book] = data;
-            _this.buildNodesFromJson(data);
+    var url = 
+        "api/book.json?author=" + encodeURIComponent(_this.author) +
+        "&book=" + encodeURIComponent(_this.book);
+
+    $.getJSON(url, function(data) {
+        //data.cds = Utils.sortObject(data.cds);
+        
+        data.cds.sort(function(a,b) {
+            return a.name > b.name;
         });
-    }
+        
+        $.each(data.cds, function() {
+            this.tracks.sort();
+        });
+        
+        _this.buildNodesFromJson(data);
+    });
 }
 
 TrackScreen.prototype.buildNodesFromJson = function(data) {

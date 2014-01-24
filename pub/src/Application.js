@@ -1,7 +1,5 @@
 function Application() {
     this.screen = null;
-    this.fileCache = {};
-    this.fileCache.author = [];
     this.toolbar = new Toolbar();
     this.tools = new Tools();
     if (localStorage.getItem("abp_playerType") === "RemotePlayer") {
