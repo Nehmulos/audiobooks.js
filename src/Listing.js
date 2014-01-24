@@ -61,6 +61,13 @@ Listing.prototype.getDirectoryList = function(directory, covers, callback) {
 
 Listing.prototype.sendArtistList = function(res, artist) {
     this.getDirectoryList(fileServer.resolveUrl("books/"), true, function(error, listing) {
+        if (error) {
+            res.writeHead(500, {"Content-Type": "application/json"});
+            res.write(JSON.stringify({error:"listing books/ failed"}), "utf8");
+            res.end();
+            return;
+        }
+        
         var jsonObject = {
             authors: listing.directories,
             covers: listing.covers
@@ -73,6 +80,13 @@ Listing.prototype.sendArtistList = function(res, artist) {
 
 Listing.prototype.sendBookList = function(res, artist) {
     this.getDirectoryList(fileServer.resolveUrl("books/" + artist + "/"), true, function(error, listing) {
+        if (error) {
+            res.writeHead(500, {"Content-Type": "application/json"});
+            res.write(JSON.stringify({error:"listing books/" + artist +"/ failed"}), "utf8");
+            res.end();
+            return;
+        }
+    
         var jsonObject = {
             books: listing.directories,
             covers: listing.covers
@@ -107,6 +121,13 @@ Listing.prototype.sendTrackList = function(res, artist, book) {
     var _this = this;
     var url = fileServer.resolveUrl("books/" + artist + "/" + book);
     this.getDirectoryList(url, false, function(error, listing) {
+        if (error) {
+            res.writeHead(500, {"Content-Type": "application/json"});
+            res.write(JSON.stringify({error:"listing cds failed"}), "utf8");
+            res.end();
+            return;
+        }
+    
         var jsonObject = {cds:[]};
         console.log(listing);
         var cds = listing.directories;
