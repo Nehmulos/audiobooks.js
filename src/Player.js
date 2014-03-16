@@ -163,6 +163,7 @@ Player.prototype.playNextOnTrackList = function() {
         if (process == _this.mplayerProcess) {
             _this.mplayerProcess = null;
         }
+        _this.playNextOnTrackList();
     });
 }
 
