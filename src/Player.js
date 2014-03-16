@@ -8,7 +8,6 @@ function Player() {
     this.track = null;
     this.trackList = [];
     this.progress = null;
-    this.playStatus = "none";
     this.mplayerProcess = null;
     this.paused = true;
     this.autoPauseTimeoutId = null;
@@ -54,7 +53,7 @@ Player.prototype.setTrackList = function(res, trackList) {
 
 Player.prototype.togglePause = function(res) {
     if (this.mplayerProcess) {
-        this.mplayerProcess.stdin.write("p");
+        this.mplayerProcess.stdin.write("pause\n");
         this.paused = !this.paused;
         if (res) {
             var status = this.paused ? "paused" : "playing";
@@ -114,7 +113,6 @@ Player.prototype.stop = function(res) {
 Player.prototype.stopProcess = function() {
     this.track = null;
     this.progress = null;
-    this.playStatus = "none";
     
     if (this.mplayerProcess) {
         this.mplayerProcess.kill();
@@ -146,12 +144,12 @@ Player.prototype.playNextOnTrackList = function() {
     }
     this.stopProcess();
     
-    var url = this.trackList.splice(0,1);
-    this.track = url[0];
+    var args = this.trackList.splice(0,1);
+    args.push("--slave");
+    this.track = args[0];
     
-    this.playStatus = "init";
     this.paused = false;
-    this.mplayerProcess = spawn("mplayer", url); // escapes spaces, too.
+    this.mplayerProcess = spawn("mplayer", args); // escapes spaces, too.
     
     var _this = this;
     this.mplayerProcess.stdout.on("data", function(data) {
@@ -169,55 +167,17 @@ Player.prototype.playNextOnTrackList = function() {
 }
 
 Player.prototype.onMplayerOutput = function(line) {
-    //console.log("LINE" + line);
-    if (this.playStatus == "init") {
-        if (/Starting playback\.\.\.\s$/.test(line)) {
-            this.playStatus = "playing";
-            console.log("mplayer started playing");
-        }
-    } else if (this.playStatus == "playing") {
-        // mplayer will output 3 new lines after a file reached the end
-        // after that either the next file will be played, or mplayer will exit
-        if (/\n\n/.test(line)) {
-            this.playStatus = "ended";
-            console.log("endofFile");
-        } else {
-            this.progress = this.parseMplayerProgress("" + line);
-            //console.log(this.progress);
-        }
-    } else if (this.playStatus == "ended") {
-        console.log("eof message: "  + line)
-        if (/Exiting\.\.\. \(End of file\)/.test(line)) {
-            console.log("exit mplayer");
-            // just kill the process on os level, since that's faster than
-            // proper unregistration from pulse-audio-server and enables fluid
-            // playback with no break between tracks
-            // TODO check if this is true. I just assume it from expirience.
-            this.playNextOnTrackList();
-            
-        } else if (/Playing /.test(line)) {
-            this.playStatus = "init";
-            var matches = /Playing (.+)\.\n$/.exec(line) || [];
-            if (matches.length == 2 && this.trackList.length > 0) {
-                this.track = matches[1];
-                if (matches[1] == this.trackList[0]) {
-                    this.trackList.splice(0,1);
-                    console.log("spliced tracklist (0,1)");
-                }
-                console.log("playing next track: " + this.track);
-            } else {
-                console.log("ERROR: COULD NOT MATCH play line" + line);
-            }
-        } else {
-            console.log("don't know how to handle eof output: "  + line);
-        }
-        
-    } else {
-        console.log("don't know how to handle mplayer output: " + line);
+    var progress = this.parseMplayerProgress("" + line);
+    if (progress && !isNaN(progress.current) && !isNaN(progress.current)) {
+        this.progress = progress;
     }
 }
 
+// TODO regex to check for proper prefixes prefore times, A: V: and so on
 Player.prototype.parseMplayerProgress = function(line) {
+    if (line.length <= 2) {
+        return null;
+    }
     var parts = line.substr(2, line.length).split(" ");
     // remove multiple spaces
     for (var i=0; i < parts.length; ++i) {
@@ -226,7 +186,10 @@ Player.prototype.parseMplayerProgress = function(line) {
             --i;
         }
     }
-    
+
+    if (parts.length < 4) {
+        return null;
+    }
     var progress = {
         current: parseFloat(parts[0]),
         length: parseFloat(parts[3])
@@ -247,7 +210,7 @@ Player.prototype.sendProgress = function(res) {
 
 Player.prototype.sendPlayStatus = function(res) {
     var ret = {
-        status: this.playStatus,
+        status: this.mplayerProcess ? "playing" : "none",
         progress: this.progress,
         paused: this.paused,
         track: this.track,
