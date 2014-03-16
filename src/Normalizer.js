@@ -75,7 +75,7 @@ Normalizer.prototype.unifyTrackNamesForCd = function(directory, finishCallback) 
                 var oldPath = path.join(directory, tracks[t].name);
                 var newPath = path.join(directory, newName + extension);
                 console.log(tracks[t].name, " to ", newName + extension);
-                //fs.rename(oldPath, newPath, checkEnd);
+                fs.rename(oldPath, newPath, checkEnd);
             } else {
                 checkEnd();
             }
